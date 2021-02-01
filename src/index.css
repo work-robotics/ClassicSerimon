@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  background-color: #3b3b3b;
+  color: #ffffff;
+  font-size: 40px;
+  user-select: none;
+}
+
+:focus {
+  outline: none;
+}
