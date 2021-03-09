@@ -177,12 +177,12 @@ class CanvasViewer {
       this.state.rawDatas.push("");
     }
     for (const d of data) {
-      if (d == "\n" || d == "\r") {
+      if (this.column_counter == this.params.maxLineNum) {
         this.state.rawDatas.push("");
-        continue;
-      } else {
-        this.state.rawDatas[this.state.rawDatas.length - 1] += d;
+        this.column_counter = 0;
       }
+      this.state.rawDatas[this.state.rawDatas.length - 1] += d;
+      this.column_counter++;
     }
     // 各レイヤーに反映
     this.updateLayers();

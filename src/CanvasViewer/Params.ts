@@ -8,6 +8,7 @@ export class Params {
   public lineNumbersWidth: number;
   public paddingLineNumbersRight: number;
   public paddingCanvasTop: number;
+  public maxLineNum: number;
 
   constructor() {
     this.rowHeight = 20;
@@ -19,6 +20,7 @@ export class Params {
     this.lineNumbersWidth = 90;
     this.paddingLineNumbersRight = 10;
     this.paddingCanvasTop = this.rowHeight / 2;
+    this.maxLineNum = 10;
   }
 }
 
