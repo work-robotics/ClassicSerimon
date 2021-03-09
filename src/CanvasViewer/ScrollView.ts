@@ -13,7 +13,6 @@ class ScrollView {
   private scrollBarBackground: Konva.Rect | undefined;
   private updateScrollLayerTicking: boolean;
   private scrollTimer: NodeJS.Timeout | undefined;
-  private scrollMode: boolean;
   private updateHandler: () => void;
   private updateDragHandler: () => void;
   private mouseEnterHandler: () => void;
@@ -85,7 +84,7 @@ class ScrollView {
       this.scrollBar.visible(false);
     } else {
       if (!this.scrollBar.visible()) {
-        this.scrollMode = true;
+        this.state.enableAutoScroll = true;
       }
       // スクロールバーの表示を有効
       this.scrollBarBackground.visible(true);
@@ -99,7 +98,7 @@ class ScrollView {
       );
 
       // scrollTopを更新
-      if (this.scrollMode) {
+      if (this.state.enableAutoScroll) {
         this.state.scrollTop = this.state.scrollHeight - this.mainStage.height();
       } else {
         this.state.scrollTop = Math.ceil(
@@ -143,7 +142,7 @@ class ScrollView {
     pos.y = Math.max(Math.min(pos.y, this.mainStage.height() - this.scrollBar.height()), 0);
     pos.x = this.mainStage.width() - this.scrollBar.width();
     this.updateLayer();
-    this.scrollMode = pos.y == this.mainStage.height() - this.scrollBar.height();
+    this.state.enableAutoScroll = pos.y == this.mainStage.height() - this.scrollBar.height();
     return pos;
   }
 

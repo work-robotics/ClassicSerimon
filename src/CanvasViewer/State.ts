@@ -11,6 +11,7 @@ export class State {
   public mousePosition: { x: number; y: number };
   public mouseOverIndex: { x: number; y: number };
   public isMovedMouse: boolean;
+  public enableAutoScroll: boolean;
 
   public selectedIndexs: {
     top: { row: number; start: number; end: number };
