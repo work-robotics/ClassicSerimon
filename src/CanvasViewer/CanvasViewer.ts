@@ -53,6 +53,7 @@ class CanvasViewer {
 
   private mouseWheelEvent(event: WheelEvent): void {
     this.state.scrollTop += event.deltaY;
+    this.state.enableAutoScroll = this.state.scrollHeight - this.mainStage.height() < this.state.scrollTop;
     if (this.state.isMovedMouse == true) {
       // scrollTopを変更したので強制的に反映
       this.scrollView.updateContents();
