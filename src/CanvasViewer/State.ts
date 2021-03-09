@@ -1,7 +1,7 @@
 export class State {
   public rowTopIndex: number;
   public rowBottomIndex: number;
-  public rawDatas: string[];
+  public rawDatas: number[][];
   public viewTextDatas: string[];
   public renderDatasWidth: number[][];
   public scrollHeight: number;

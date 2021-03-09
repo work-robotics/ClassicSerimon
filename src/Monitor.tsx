@@ -77,12 +77,7 @@ const Monitor: React.FC = () => {
       });
       SerialPortRef.current.on("data", (data) => {
         for (const d of data) {
-          counter.current++;
-          canvasViewerRef.current.getCanvasViewer().addText(("00" + d.toString(16).toUpperCase()).substr(-2) + " ");
-          if (counter.current == 16) {
-            canvasViewerRef.current.getCanvasViewer().addText("\n");
-            counter.current = 0;
-          }
+          canvasViewerRef.current.getCanvasViewer().addText([d]);
         }
       });
       setIsConnected(true);

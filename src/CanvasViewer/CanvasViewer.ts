@@ -106,28 +106,26 @@ class CanvasViewer {
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
       let output = "";
-      for (const d of this.state.rawDatas[this.state.selectedIndexs.top.row].slice(
-        this.state.selectedIndexs.top.start,
-        this.state.selectedIndexs.top.end
-      )) {
-        output += this.textView.binaryFormatStr(d);
-      }
+      output += this.textView.binaryFormatStr(
+        this.state.rawDatas[this.state.selectedIndexs.top.row].slice(
+          this.state.selectedIndexs.top.start,
+          this.state.selectedIndexs.top.end
+        )
+      );
       output += "\n";
       this.state.rawDatas
         .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
         .forEach((data) => {
-          for (const d of data) {
-            output += this.textView.binaryFormatStr(d);
-          }
+          output += this.textView.binaryFormatStr(data);
           output += "\n";
         });
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
-        for (const d of this.state.rawDatas[this.state.selectedIndexs.bottom.row].slice(
-          this.state.selectedIndexs.bottom.start,
-          this.state.selectedIndexs.bottom.end
-        )) {
-          output += this.textView.binaryFormatStr(d);
-        }
+        output += this.textView.binaryFormatStr(
+          this.state.rawDatas[this.state.selectedIndexs.bottom.row].slice(
+            this.state.selectedIndexs.bottom.start,
+            this.state.selectedIndexs.bottom.end
+          )
+        );
       }
       event.clipboardData.setData("text/plain", output);
       event.preventDefault();
@@ -172,16 +170,16 @@ class CanvasViewer {
   }
 
   // テキストを追加する関数
-  public addText(data: string): void {
+  public addText(data: number[]): void {
     if (this.state.rawDatas.length == 0) {
-      this.state.rawDatas.push("");
+      this.state.rawDatas.push([]);
     }
-    for (const d of data) {
+    for (let i in data) {
       if (this.column_counter == this.params.maxLineNum) {
-        this.state.rawDatas.push("");
+        this.state.rawDatas.push([]);
         this.column_counter = 0;
       }
-      this.state.rawDatas[this.state.rawDatas.length - 1] += d;
+      this.state.rawDatas[this.state.rawDatas.length - 1][this.column_counter] = data[i];
       this.column_counter++;
     }
     // 各レイヤーに反映
@@ -190,11 +188,12 @@ class CanvasViewer {
 
   public clearText(): void {
     this.state.rawDatas = [];
+    this.column_counter = 0;
     // 各レイヤーに反映
     this.updateLayers();
   }
 
-  public getTexts(): string[] {
+  public getTexts(): number[][] {
     return this.state.rawDatas;
   }
 

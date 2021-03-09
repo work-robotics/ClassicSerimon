@@ -154,21 +154,27 @@ class TextView {
     this.state.rawDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
       this.state.viewTextDatas.push("");
       this.state.renderDatasWidth.push([]);
-      for (const d of data) {
-        for (const s of this.binaryFormatStr(d)) {
+
+      for (const strs of this.binaryFormatStr(data)) {
+        for (const s of strs) {
           this.state.viewTextDatas[index] += s;
           this.state.renderDatasWidth[index].push(this.getTextWidth(s));
         }
       }
+
       newTextLineNumContent += ("0000000000" + (index + this.state.rowTopIndex)).slice(-8) + "\n";
     });
     this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
   }
 
-  public binaryFormatStr(data: string): string {
-    return data;
-    // return ("00" + data.charCodeAt(0).toString(16)).substr(-2) + " ";
+  public binaryFormatStr(data: number[], addSpace: boolean = true): string {
+    let content = "";
+    for (let i in data) {
+      content += data[i].toString(16);
+      if (addSpace && parseInt(i) != data.length - 1) content += " ";
+    }
+    return content;
   }
 }
 
