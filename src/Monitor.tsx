@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlug, faSave } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
+import { useInterval } from "react-timing-hooks";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -63,6 +64,13 @@ const Monitor: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const counter = useRef<number>(0);
 
+  const [isConnectedBluetooth, setIsConnectedBluetooth] = useState<boolean>(false);
+  const bluetooth_device = useRef<any>();
+
+  function print(data: string) {
+    canvasViewerRef.current.getCanvasViewer().addText(data + "\n");
+  }
+
   function clearBottonHandler(e) {
     e.preventDefault();
     canvasViewerRef.current.getCanvasViewer().clearText();
@@ -93,6 +101,47 @@ const Monitor: React.FC = () => {
     }
   }
 
+  function startBluetoothBottonHandler(e) {
+    e.preventDefault();
+    if (!isConnectedBluetooth) {
+      canvasViewerRef.current.getCanvasViewer().clearText();
+      let navigatorObject: any = window.navigator;
+      if (navigatorObject && navigatorObject.bluetooth) {
+        navigatorObject.bluetooth
+          .requestDevice({
+            filters: [{ name: "BLE UART" }],
+            optionalServices: ["6e400001-b5a3-f393-e0a9-e50e24dcca9e"],
+          })
+          .then((device) => {
+            console.log(device);
+            print("Connect: " + device.name);
+            bluetooth_device.current = device;
+            return device.gatt.connect();
+          })
+          .then((server) => {
+            console.log("server", server);
+            return server.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
+          })
+          .then((service) => {
+            console.log("service", service);
+            return service.getCharacteristic("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
+          })
+          .then((characteristic) => {
+            console.log("characteristic", characteristic);
+            characteristic.startNotifications();
+            characteristic.addEventListener("characteristicvaluechanged", onCharacteristicValueChanged);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      setIsConnectedBluetooth(true);
+    } else {
+      setIsConnectedBluetooth(false);
+      bluetooth_device.current.gatt.disconnect();
+    }
+  }
+
   function saveBottonHandler(e) {
     e.preventDefault();
     if (SerialPortRef.current != undefined) {
@@ -118,6 +167,15 @@ const Monitor: React.FC = () => {
       });
   }
 
+  function onCharacteristicValueChanged(e) {
+    const data = e.target.value;
+
+    const decoder = new TextDecoder("utf-8");
+    const str = decoder.decode(data);
+    // console.log(str);
+    canvasViewerRef.current.getCanvasViewer().addText(str);
+  }
+
   return (
     <>
       <Container fluid style={ContainerStyleBase} className={ContainerStyle}>
@@ -131,6 +189,16 @@ const Monitor: React.FC = () => {
             {!isConnected && (
               <Button variant="success" onClick={startBottonHandler}>
                 <FontAwesomeIcon icon={faPlug} /> {" Start"}
+              </Button>
+            )}{" "}
+            {isConnectedBluetooth && (
+              <Button variant="danger" onClick={startBluetoothBottonHandler}>
+                <FontAwesomeIcon icon={faPlug} /> {" Stop Bluetooth"}
+              </Button>
+            )}
+            {!isConnectedBluetooth && (
+              <Button variant="success" onClick={startBluetoothBottonHandler}>
+                <FontAwesomeIcon icon={faPlug} /> {" Start Bluetooth"}
               </Button>
             )}
           </Col>
