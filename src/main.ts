@@ -17,9 +17,9 @@ function createWindow() {
     minWidth: 800,
     useContentSize: true,
     resizable: true,
-    webPreferences: { 
-      nodeIntegration: true, 
-      enableRemoteModule: true
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
   // window.webContents.openDevTools();

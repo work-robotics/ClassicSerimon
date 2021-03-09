@@ -83,7 +83,7 @@ class ScrollView {
       this.scrollBarBackground.visible(false);
       this.scrollBar.visible(false);
     } else {
-      if(!this.scrollBar.visible()){
+      if (!this.scrollBar.visible()) {
         this.scrollMode = true;
       }
       // スクロールバーの表示を有効
@@ -98,11 +98,12 @@ class ScrollView {
       );
 
       // scrollTopを更新
-      if(this.scrollMode){
+      if (this.scrollMode) {
         this.state.scrollTop = this.state.scrollHeight - this.mainStage.height();
-      }else{
+      } else {
         this.state.scrollTop = Math.ceil(
-          Math.max(Math.min(this.state.scrollTop, this.state.scrollHeight - this.mainStage.height()), 0));
+          Math.max(Math.min(this.state.scrollTop, this.state.scrollHeight - this.mainStage.height()), 0)
+        );
       }
 
       // スクロールバー背景の更新
