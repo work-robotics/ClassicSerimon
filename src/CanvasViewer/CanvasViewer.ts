@@ -106,13 +106,9 @@ class CanvasViewer {
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
       let output = "";
-      output += this.textView.binaryFormatStr(
-        this.state.rawDatas[this.state.selectedIndexs.top.row].slice(
-          this.state.selectedIndexs.top.start,
-          this.state.selectedIndexs.top.end
-        )
-      );
-      output += "\n";
+      output += this.textView
+        .binaryFormatStr(this.state.rawDatas[this.state.selectedIndexs.top.row])
+        .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
       this.state.rawDatas
         .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
         .forEach((data) => {
@@ -120,12 +116,9 @@ class CanvasViewer {
           output += "\n";
         });
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
-        output += this.textView.binaryFormatStr(
-          this.state.rawDatas[this.state.selectedIndexs.bottom.row].slice(
-            this.state.selectedIndexs.bottom.start,
-            this.state.selectedIndexs.bottom.end
-          )
-        );
+        output += this.textView
+          .binaryFormatStr(this.state.rawDatas[this.state.selectedIndexs.bottom.row])
+          .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
       }
       event.clipboardData.setData("text/plain", output);
       event.preventDefault();
