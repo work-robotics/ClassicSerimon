@@ -12,11 +12,11 @@ contextMenu({
 function createWindow() {
   const window = new BrowserWindow({
     width: 800,
-    height: 500,
+    height: 600,
     minHeight: 500,
     minWidth: 800,
     useContentSize: true,
-    resizable: true,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
