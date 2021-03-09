@@ -107,6 +107,7 @@ class SelectView {
 
     // 原点の行の場合
     if (rowDiff == 0) {
+      this.state.selectDirection = "No";
       this.state.selectedIndexs.top.row = this.state.selectedIndexs.origin.row;
       this.state.selectedIndexs.bottom.row = this.state.selectedIndexs.origin.row;
       if (columnDiff < 0) {
@@ -126,10 +127,12 @@ class SelectView {
     // 上移動の場合
     if (rowDiff > 0) {
       // Top設定
+      this.state.selectDirection = "UP";
+      this.state.selectedIndexs.top.end = this.state.viewTextDatas[this.state.mouseOverIndex.y].length;
+
       this.state.selectedIndexs.top.row = this.state.selectedIndexs.origin.row - rowDiff;
       // 一般的なセレクタは上に行くと原点より右側の項目をすべて選択することが多い（トップの場合）
       this.state.selectedIndexs.top.start = this.state.selectedIndexs.origin.column;
-      this.state.selectedIndexs.top.end = this.state.renderDatas[rowTopIndex + this.state.mouseOverIndex.y].length;
 
       // Bottom設定(差分がプラス=原点以下は選択されていない=Bottomを原点に)
       this.state.selectedIndexs.bottom.row = this.state.selectedIndexs.origin.row;
@@ -147,11 +150,16 @@ class SelectView {
     }
 
     if (rowDiff < 0) {
+      if (this.state.selectDirection != "DOWN") {
+        const targetIndex = this.state.selectedIndexs.origin.row - rowTopIndex;
+        this.state.selectedIndexs.top.end = this.state.viewTextDatas[targetIndex].length;
+      }
+      this.state.selectDirection = "DOWN";
+
       // Top設定(原点に設定)
       this.state.selectedIndexs.top.row = this.state.selectedIndexs.origin.row;
       // 一般的なセレクタは上に行くと原点より右側の項目をすべて選択することが多い（トップの場合）
       this.state.selectedIndexs.top.start = this.state.selectedIndexs.origin.column;
-      this.state.selectedIndexs.top.end = this.state.renderDatas[this.state.selectedIndexs.origin.row].length;
 
       // Bottom設定(差分がプラス=原点以下は選択されていない=Bottomを原点に)
       this.state.selectedIndexs.bottom.row = this.state.selectedIndexs.origin.row - rowDiff;
@@ -183,12 +191,16 @@ class SelectView {
 
     let middlePoints: number[] = [];
 
-    this.state.renderDatas.slice(rowTopIndex, rowBottomIndex).forEach((data, index) => {
+    if (this.state.viewTextDatas == undefined) {
+      return;
+    }
+
+    this.state.viewTextDatas.forEach((data, index) => {
       const h = this.params.rowHeight;
       // 上段
       if (topRow == rowTopIndex + index && topStart >= 0 && topEnd >= 0) {
-        const startX = this.getTextWidth(this.state.renderDatas[rowTopIndex + index].slice(0, topStart));
-        const endX = this.getTextWidth(this.state.renderDatas[rowTopIndex + index].slice(0, topEnd));
+        const startX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, topStart));
+        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, topEnd));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = startX + this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX - startX;
@@ -196,8 +208,8 @@ class SelectView {
       }
       // 下段
       if (bottomRow == rowTopIndex + index && bottomStart >= 0 && bottomStart >= 0) {
-        const startX = this.getTextWidth(this.state.renderDatas[rowTopIndex + index].slice(0, bottomStart));
-        const endX = this.getTextWidth(this.state.renderDatas[rowTopIndex + index].slice(0, bottomEnd));
+        const startX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomStart));
+        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomEnd));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = startX + this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX - startX;
@@ -206,7 +218,7 @@ class SelectView {
       // 中間層
       if (topRow < rowTopIndex + index && bottomRow > rowTopIndex + index) {
         const middleWidth = this.getTextWidth(data);
-        const endX = this.getTextWidth(this.state.renderDatas[rowTopIndex + index].slice(0, middleWidth + 1));
+        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, middleWidth + 1));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX;

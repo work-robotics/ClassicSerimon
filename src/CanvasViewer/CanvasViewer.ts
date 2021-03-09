@@ -13,6 +13,8 @@ class CanvasViewer {
   private scrollView: ScrollView;
   private selectView: SelectView;
 
+  private column_counter: number;
+
   constructor(id: string) {
     // 関数をバインド
     this.mouseMoveEvent = this.mouseMoveEvent.bind(this);
@@ -40,6 +42,7 @@ class CanvasViewer {
       this.mouseLeaveHandler
     );
     this.selectView = new SelectView(this.mainStage, this.params, this.state);
+    this.column_counter = 0;
 
     // イベントの登録
     this.mainStage.container().addEventListener("mousedown", this.mouseDownEvent);
@@ -102,21 +105,29 @@ class CanvasViewer {
 
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
-      var output =
-        this.state.renderDatas[this.state.selectedIndexs.top.row].slice(
-          this.state.selectedIndexs.top.start,
-          this.state.selectedIndexs.top.end
-        ) + "\n";
+      let output = "";
+      for (const d of this.state.renderDatas[this.state.selectedIndexs.top.row].slice(
+        this.state.selectedIndexs.top.start,
+        this.state.selectedIndexs.top.end
+      )) {
+        output += this.textView.binaryFormatStr(d);
+      }
+      output += "\n";
       this.state.renderDatas
         .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
         .forEach((data) => {
-          output += data + "\n";
+          for (const d of data) {
+            output += this.textView.binaryFormatStr(d);
+          }
+          output += "\n";
         });
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
-        output += this.state.renderDatas[this.state.selectedIndexs.bottom.row].slice(
+        for (const d of this.state.renderDatas[this.state.selectedIndexs.bottom.row].slice(
           this.state.selectedIndexs.bottom.start,
           this.state.selectedIndexs.bottom.end
-        );
+        )) {
+          output += this.textView.binaryFormatStr(d);
+        }
       }
       event.clipboardData.setData("text/plain", output);
       event.preventDefault();
@@ -164,16 +175,13 @@ class CanvasViewer {
   public addText(data: string): void {
     if (this.state.renderDatas.length == 0) {
       this.state.renderDatas.push("");
-      this.state.renderDatasWidth.push([]);
     }
     for (const d of data) {
       if (d == "\n" || d == "\r") {
         this.state.renderDatas.push("");
-        this.state.renderDatasWidth.push([]);
         continue;
       } else {
         this.state.renderDatas[this.state.renderDatas.length - 1] += d;
-        this.state.renderDatasWidth[this.state.renderDatas.length - 1].push(this.textView.getTextWidth(d));
       }
     }
     // 各レイヤーに反映
@@ -182,7 +190,6 @@ class CanvasViewer {
 
   public clearText(): void {
     this.state.renderDatas = [];
-    this.state.renderDatasWidth = [];
     // 各レイヤーに反映
     this.updateLayers();
   }
@@ -202,8 +209,8 @@ class CanvasViewer {
   }
 
   private updateLayers() {
-    this.selectView.updateLayer();
     this.textView.updateLayer();
+    this.selectView.updateLayer();
     this.scrollView.updateLayer();
   }
 }

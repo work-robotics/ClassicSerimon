@@ -51,10 +51,7 @@ class TextView {
     );
 
     // カーソル上の列番号を算出
-    this.state.mouseOverIndex.x = this.getColumnPosition(
-      this.state.rowTopIndex + this.state.mouseOverIndex.y,
-      this.state.mousePosition.x
-    );
+    this.state.mouseOverIndex.x = this.getColumnPosition(this.state.mouseOverIndex.y, this.state.mousePosition.x);
   }
 
   public getColumnPosition(targetRow: number, x: number): number {
@@ -66,7 +63,7 @@ class TextView {
     }
     // 左から探索してヒットした場所を返す
     let sum = 0;
-    for (let index = 0; index < this.state.renderDatas[targetRow].length; index++) {
+    for (let index = 0; index < this.state.viewTextDatas[targetRow].length; index++) {
       const buf = this.state.renderDatasWidth[targetRow][index] / 2;
       sum += buf;
       if (sum > offsetedX) {
@@ -75,7 +72,7 @@ class TextView {
       sum += buf;
     }
     // ヒットしなかった場合は最大値を返す
-    return this.state.renderDatas[targetRow].length;
+    return this.state.viewTextDatas[targetRow].length;
   }
 
   // レイヤー初期化関数
@@ -151,14 +148,27 @@ class TextView {
       this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
     }
 
-    let newTextDataContent = "";
     let newTextLineNumContent = "";
+    this.state.viewTextDatas = [];
+    this.state.renderDatasWidth = [];
     this.state.renderDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
-      newTextDataContent += data + "\n";
+      this.state.viewTextDatas.push("");
+      this.state.renderDatasWidth.push([]);
+      for (const d of data) {
+        for (const s of this.binaryFormatStr(d)) {
+          this.state.viewTextDatas[index] += s;
+          this.state.renderDatasWidth[index].push(this.getTextWidth(s));
+        }
+      }
       newTextLineNumContent += ("0000000000" + (index + this.state.rowTopIndex)).slice(-8) + "\n";
     });
-    this.textDataContent.text(newTextDataContent);
+    this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
+  }
+
+  public binaryFormatStr(data: string): string {
+    return data;
+    // return ("00" + data.charCodeAt(0).toString(16)).substr(-2) + " ";
   }
 }
 

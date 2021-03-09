@@ -2,6 +2,7 @@ export class State {
   public rowTopIndex: number;
   public rowBottomIndex: number;
   public renderDatas: string[];
+  public viewTextDatas: string[];
   public renderDatasWidth: number[][];
   public scrollHeight: number;
   public scrollTop: number;
@@ -12,6 +13,7 @@ export class State {
   public mouseOverIndex: { x: number; y: number };
   public isMovedMouse: boolean;
   public enableAutoScroll: boolean;
+  public selectDirection: string;
 
   public selectedIndexs: {
     top: { row: number; start: number; end: number };
@@ -36,6 +38,7 @@ export class State {
       bottom: { row: -1, start: -1, end: -1 },
       origin: { row: -1, column: -1 },
     };
+    this.selectDirection = "No";
   }
 }
 
