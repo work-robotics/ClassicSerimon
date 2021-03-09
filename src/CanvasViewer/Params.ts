@@ -15,7 +15,7 @@ export class Params {
     this.fontColor = "#000";
     this.backgroundColor = "#fff";
     this.selectCellColor = "#0000ff";
-    this.fontFamily = "Menlo, Consolas";
+    this.fontFamily = "JetBrains Mono, Source Han Code JP, Menlo, Consolas";
     this.lineNumbersWidth = 90;
     this.paddingLineNumbersRight = 10;
     this.paddingCanvasTop = this.rowHeight / 2;
