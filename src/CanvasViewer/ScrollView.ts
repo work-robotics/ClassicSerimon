@@ -181,6 +181,7 @@ class ScrollView {
       if (this.scrollTimer == undefined) {
         this.scrollTimer = setInterval(() => {
           this.state.scrollTop -= Math.abs(this.state.mousePosition.y) * 0.1;
+          this.state.enableAutoScroll = false;
           this.updateDragHandler();
         }, 1);
       }
@@ -188,6 +189,7 @@ class ScrollView {
       if (this.scrollTimer == undefined) {
         this.scrollTimer = setInterval(() => {
           this.state.scrollTop += 0.1 * (this.state.mousePosition.y - this.params.rowHeight * this.state.rowNumber);
+          this.state.enableAutoScroll = this.state.scrollHeight - this.mainStage.height() < this.state.scrollTop;
           this.updateDragHandler();
         }, 1);
       }
