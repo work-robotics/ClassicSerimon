@@ -117,7 +117,12 @@ class ScrollView {
       const a = this.state.scrollHeight - this.mainStage.height();
       const b = this.state.scrollTop * (this.mainStage.height() - this.scrollBar.height());
       this.scrollBar.x(this.mainStage.width() - this.scrollBar.width());
-      this.scrollBar.y(b / a);
+      const y_pos = b / a;
+      if (isNaN(y_pos)) {
+        this.scrollBar.y(0);
+      } else {
+        this.scrollBar.y(y_pos);
+      }
     }
 
     // rowTopIndex, rowBottomIndexの算出(スクロールが必要な状況でのみ)
