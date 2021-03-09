@@ -9,11 +9,14 @@ class TextView {
 
   /* テキスト */
   private textLayer: Konva.Layer | undefined;
-  private textBackground: Konva.Rect | undefined;
   private textConfig: Konva.TextConfig | undefined;
-  private textDataContent: Konva.Text;
-  private textLineNumContent: Konva.Text;
   private tempText: Konva.Text | undefined;
+
+  private textDataContent: Konva.Text;
+
+  private textLineBackground: Konva.Rect | undefined;
+  private textLineNumContent: Konva.Text;
+
   private updateTextLayerTicking: boolean;
 
   constructor(stage: Konva.Stage, params: Params, state: State) {
@@ -84,7 +87,7 @@ class TextView {
     this.state.rowBottomIndex = 0;
 
     // 行番号の背景
-    this.textBackground = new Konva.Rect({
+    this.textLineBackground = new Konva.Rect({
       fill: "#424242",
       width: this.params.lineNumbersWidth,
       height: this.mainStage.height(),
@@ -117,7 +120,7 @@ class TextView {
     });
 
     // レイヤに追加
-    this.textLayer.add(this.textBackground);
+    this.textLayer.add(this.textLineBackground);
     this.textLayer.add(this.textLineNumContent);
     this.textLayer.add(this.textDataContent);
     this.mainStage.add(this.textLayer);
@@ -136,7 +139,7 @@ class TextView {
 
   private updateContents() {
     // 行番号の背景の再設定
-    this.textBackground.height(this.mainStage.height());
+    this.textLineBackground.height(this.mainStage.height());
     // 画面の高さなどから最大行数を計算
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
