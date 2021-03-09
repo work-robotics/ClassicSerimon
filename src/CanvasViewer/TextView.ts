@@ -161,7 +161,7 @@ class TextView {
     this.updateTextLayerTicking = true;
   }
 
-  private updateContents() {
+  public updateContents() {
     // 行番号の背景の再設定
     this.textLineBackground.height(this.mainStage.height());
     this.textTopBackground.width(this.mainStage.width() - 20);
