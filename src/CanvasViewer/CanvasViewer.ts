@@ -179,12 +179,12 @@ class CanvasViewer {
 
   public clearText(): void {
     this.state.renderDatas = [];
-    this.state.renderDatasWidth = []
+    this.state.renderDatasWidth = [];
     // 各レイヤーに反映
     this.updateLayers();
   }
 
-  public getTexts(): string[]{
+  public getTexts(): string[] {
     return this.state.renderDatas;
   }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext, useState } from "react";
-import { remote } from 'electron';
+import { remote } from "electron";
 import fs from "fs";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { css } from "emotion";
@@ -63,7 +63,6 @@ const Monitor: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const counter = useRef<number>(0);
 
-
   function clearBottonHandler(e) {
     e.preventDefault();
     canvasViewerRef.current.getCanvasViewer().clearText();
@@ -72,21 +71,22 @@ const Monitor: React.FC = () => {
 
   function startBottonHandler(e) {
     e.preventDefault();
-    if(!isConnected){
-      SerialPortRef.current = new SerialPort(deviceStatus.selectedDevice, { baudRate: baudrateStatus.selectedBaudrate });
-      SerialPortRef.current.on("data", data => {
+    if (!isConnected) {
+      SerialPortRef.current = new SerialPort(deviceStatus.selectedDevice, {
+        baudRate: baudrateStatus.selectedBaudrate,
+      });
+      SerialPortRef.current.on("data", (data) => {
         for (const d of data) {
           counter.current++;
-          canvasViewerRef.current.getCanvasViewer().addText((('00' + d.toString(16).toUpperCase()).substr(-2)) + " ");
+          canvasViewerRef.current.getCanvasViewer().addText(("00" + d.toString(16).toUpperCase()).substr(-2) + " ");
           if (counter.current == 16) {
             canvasViewerRef.current.getCanvasViewer().addText("\n");
             counter.current = 0;
           }
         }
-      })
+      });
       setIsConnected(true);
-    }
-    else{
+    } else {
       SerialPortRef.current.close();
       SerialPortRef.current = undefined;
       setIsConnected(false);
@@ -95,24 +95,27 @@ const Monitor: React.FC = () => {
 
   function saveBottonHandler(e) {
     e.preventDefault();
-    if(SerialPortRef.current != undefined){
+    if (SerialPortRef.current != undefined) {
       SerialPortRef.current.pause();
     }
-    remote.dialog.showSaveDialog(null, { properties: ["createDirectory"]}).then(result => {
-      if (!result.canceled) {
-        fs.writeFile(result.filePath, canvasViewerRef.current.getCanvasViewer().getTexts().join('\n'), error => {
-          if (error != null) {
-            alert("Save Error.");
-            return;
-          }
-        });
-      }
-      if(SerialPortRef.current != undefined){
-        SerialPortRef.current.resume();
-      }
-    }).catch(err => {
+    remote.dialog
+      .showSaveDialog(null, { properties: ["createDirectory"] })
+      .then((result) => {
+        if (!result.canceled) {
+          fs.writeFile(result.filePath, canvasViewerRef.current.getCanvasViewer().getTexts().join("\n"), (error) => {
+            if (error != null) {
+              alert("Save Error.");
+              return;
+            }
+          });
+        }
+        if (SerialPortRef.current != undefined) {
+          SerialPortRef.current.resume();
+        }
+      })
+      .catch((err) => {
         console.log(err);
-    });
+      });
   }
 
   return (
@@ -130,7 +133,6 @@ const Monitor: React.FC = () => {
                 <FontAwesomeIcon icon={faPlug} /> {" Start"}
               </Button>
             )}
-
           </Col>
           <Col className={RightMenu}>
             <Button variant="secondary" onClick={saveBottonHandler}>
