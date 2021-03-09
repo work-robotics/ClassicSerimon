@@ -73,6 +73,7 @@ class CanvasViewer {
   }
 
   private mouseMoveEvent(event: MouseEvent): void {
+    this.state.enableAutoScroll = false;
     // セレクタ初期化
     if (this.state.isMovedMouse == false) {
       this.selectView.resetSelectIndex();
