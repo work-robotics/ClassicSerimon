@@ -1,5 +1,6 @@
 import Konva from "konva";
-import Params, { ViewState } from "./Params";
+import Params from "./Params";
+import State from "./State";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
@@ -7,7 +8,7 @@ import SelectView from "./SelectView";
 class CanvasViewer {
   private mainStage: Konva.Stage;
   private params: Params;
-  private state: ViewState;
+  private state: State;
   private textView: TextView;
   private scrollView: ScrollView;
   private selectView: SelectView;
@@ -27,7 +28,7 @@ class CanvasViewer {
     // 初期化
     this.mainStage = new Konva.Stage({ container: id });
     this.params = new Params();
-    this.state = new ViewState();
+    this.state = new State();
     this.textView = new TextView(this.mainStage, this.params, this.state);
     this.scrollView = new ScrollView(
       this.mainStage,

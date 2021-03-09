@@ -1,9 +1,10 @@
 import Konva from "konva";
-import Params, { ViewState } from "./Params";
+import Params from "./Params";
+import State from "./State";
 
 class SelectView {
   private params: Params;
-  private state: ViewState;
+  private state: State;
   private mainStage: Konva.Stage;
   private tempText: Konva.Text;
 
@@ -16,8 +17,8 @@ class SelectView {
 
   private updateSelectLayerTicking: boolean;
 
-  constructor(stage: Konva.Stage, params: Params, state: ViewState) {
-    // 親のViewからStageとParam,ViewStateの参照を受け取る
+  constructor(stage: Konva.Stage, params: Params, state: State) {
+    // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;

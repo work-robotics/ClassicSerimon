@@ -1,9 +1,10 @@
 import Konva from "konva";
-import Params, { ViewState } from "./Params";
+import Params from "./Params";
+import State from "./State";
 
 class ScrollView {
   private params: Params;
-  private state: ViewState;
+  private state: State;
   private mainStage: Konva.Stage;
 
   /* スクロール */
@@ -21,13 +22,13 @@ class ScrollView {
   constructor(
     stage: Konva.Stage,
     params: Params,
-    state: ViewState,
+    state: State,
     updateHandler: () => void,
     updateDragHandler: () => void,
     mouseEnterHandler: () => void = () => {},
     mouseLeaveHandler: () => void = () => {}
   ) {
-    // 親のViewからStageとParam,ViewStateの参照を受け取る
+    // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;
