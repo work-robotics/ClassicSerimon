@@ -78,7 +78,7 @@ class ScrollView {
 
   public updateContents() {
     // スクロールバーの表示設定
-    if (this.state.renderDatas.length < this.state.rowNumber) {
+    if (this.state.rawDatas.length < this.state.rowNumber) {
       // スクロールバーを非表示に設定
       this.scrollBarBackground.visible(false);
       this.scrollBar.visible(false);
@@ -92,7 +92,7 @@ class ScrollView {
 
       // scrollHeightを更新
       this.state.scrollHeight = Math.ceil(
-        (this.state.renderDatas.length - this.state.rowNumber) * this.params.rowHeight +
+        (this.state.rawDatas.length - this.state.rowNumber) * this.params.rowHeight +
           this.mainStage.height() -
           this.params.paddingCanvasTop
       );
@@ -121,10 +121,10 @@ class ScrollView {
     }
 
     // rowTopIndex, rowBottomIndexの算出(スクロールが必要な状況でのみ)
-    if (this.state.renderDatas.length > this.state.rowNumber) {
+    if (this.state.rawDatas.length > this.state.rowNumber) {
       if (this.state.scrollHeight - this.mainStage.height() == this.state.scrollTop) {
-        this.state.rowTopIndex = this.state.renderDatas.length - this.state.rowNumber;
-        this.state.rowBottomIndex = this.state.renderDatas.length;
+        this.state.rowTopIndex = this.state.rawDatas.length - this.state.rowNumber;
+        this.state.rowBottomIndex = this.state.rawDatas.length;
       } else {
         this.state.rowTopIndex = Math.ceil(this.state.scrollTop / this.params.rowHeight);
         this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
@@ -153,7 +153,7 @@ class ScrollView {
         if (moveLastLine == true) {
           // scrollTopを先最後尾に持っていくにはscrollHeightを先に計算する必要がある
           this.state.scrollHeight = Math.ceil(
-            (this.state.renderDatas.length - this.state.rowNumber) * this.params.rowHeight +
+            (this.state.rawDatas.length - this.state.rowNumber) * this.params.rowHeight +
               this.mainStage.height() -
               this.params.paddingCanvasTop
           );

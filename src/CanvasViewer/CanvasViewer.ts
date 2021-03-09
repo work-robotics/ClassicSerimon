@@ -106,14 +106,14 @@ class CanvasViewer {
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
       let output = "";
-      for (const d of this.state.renderDatas[this.state.selectedIndexs.top.row].slice(
+      for (const d of this.state.rawDatas[this.state.selectedIndexs.top.row].slice(
         this.state.selectedIndexs.top.start,
         this.state.selectedIndexs.top.end
       )) {
         output += this.textView.binaryFormatStr(d);
       }
       output += "\n";
-      this.state.renderDatas
+      this.state.rawDatas
         .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
         .forEach((data) => {
           for (const d of data) {
@@ -122,7 +122,7 @@ class CanvasViewer {
           output += "\n";
         });
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
-        for (const d of this.state.renderDatas[this.state.selectedIndexs.bottom.row].slice(
+        for (const d of this.state.rawDatas[this.state.selectedIndexs.bottom.row].slice(
           this.state.selectedIndexs.bottom.start,
           this.state.selectedIndexs.bottom.end
         )) {
@@ -173,15 +173,15 @@ class CanvasViewer {
 
   // テキストを追加する関数
   public addText(data: string): void {
-    if (this.state.renderDatas.length == 0) {
-      this.state.renderDatas.push("");
+    if (this.state.rawDatas.length == 0) {
+      this.state.rawDatas.push("");
     }
     for (const d of data) {
       if (d == "\n" || d == "\r") {
-        this.state.renderDatas.push("");
+        this.state.rawDatas.push("");
         continue;
       } else {
-        this.state.renderDatas[this.state.renderDatas.length - 1] += d;
+        this.state.rawDatas[this.state.rawDatas.length - 1] += d;
       }
     }
     // 各レイヤーに反映
@@ -189,13 +189,13 @@ class CanvasViewer {
   }
 
   public clearText(): void {
-    this.state.renderDatas = [];
+    this.state.rawDatas = [];
     // 各レイヤーに反映
     this.updateLayers();
   }
 
   public getTexts(): string[] {
-    return this.state.renderDatas;
+    return this.state.rawDatas;
   }
 
   // ステージの大きさを変更したいときに呼び出す

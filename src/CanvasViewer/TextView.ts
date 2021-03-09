@@ -141,9 +141,9 @@ class TextView {
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
     // データ数からインデックスの位置を再計算
-    if (this.state.renderDatas.length < this.state.rowNumber) {
+    if (this.state.rawDatas.length < this.state.rowNumber) {
       this.state.rowTopIndex = 0;
-      this.state.rowBottomIndex = this.state.renderDatas.length;
+      this.state.rowBottomIndex = this.state.rawDatas.length;
     } else {
       this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
     }
@@ -151,7 +151,7 @@ class TextView {
     let newTextLineNumContent = "";
     this.state.viewTextDatas = [];
     this.state.renderDatasWidth = [];
-    this.state.renderDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
+    this.state.rawDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
       this.state.viewTextDatas.push("");
       this.state.renderDatasWidth.push([]);
       for (const d of data) {

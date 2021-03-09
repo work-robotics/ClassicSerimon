@@ -1,7 +1,7 @@
 export class State {
   public rowTopIndex: number;
   public rowBottomIndex: number;
-  public renderDatas: string[];
+  public rawDatas: string[];
   public viewTextDatas: string[];
   public renderDatasWidth: number[][];
   public scrollHeight: number;
@@ -24,7 +24,7 @@ export class State {
   constructor() {
     this.rowTopIndex = 0;
     this.rowBottomIndex = 0;
-    this.renderDatas = [];
+    this.rawDatas = [];
     this.renderDatasWidth = [];
     this.scrollHeight = 0;
     this.scrollTop = 0;
