@@ -23,6 +23,7 @@ function createWindow() {
     },
   });
   // window.webContents.openDevTools();
+  window.setMenu(null);
   window.loadFile("dist/contents/index.html");
   client.create(window);
 }
