@@ -200,7 +200,7 @@ class TextView {
   public binaryFormatStr(data: number[], addSpace: boolean = true): string {
     let content = "";
     for (let i in data) {
-      content += data[i].toString(16);
+      content += data[i].toString(16).toUpperCase();
       if (addSpace && parseInt(i) != data.length - 1) content += " ";
     }
     return content;
