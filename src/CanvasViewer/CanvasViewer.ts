@@ -183,6 +183,7 @@ class CanvasViewer {
   public clearText(): void {
     this.state.rawDatas = [];
     this.column_counter = 0;
+    this.selectView.resetSelectIndex();
     // 各レイヤーに反映
     this.updateLayers();
   }
