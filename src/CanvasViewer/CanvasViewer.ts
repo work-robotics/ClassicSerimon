@@ -109,6 +109,7 @@ class CanvasViewer {
       output += this.textView
         .binaryFormatStr(this.state.rawDatas[this.state.selectedIndexs.top.row])
         .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
+      output += "\n";
       this.state.rawDatas
         .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
         .forEach((data) => {
