@@ -32,7 +32,7 @@ const Start = (done) => {
 
 const Watch = () => {
   watch("src/main.ts", Main);
-  watch("src/*.{ts,tsx}", Renderer);
+  watch("src/*.{ts,tsx,html,css}", Renderer);
   watch("dist/main.js", Restart);
   watch("dist/contents/*.{html,js,css}", Reload);
 };
