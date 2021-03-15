@@ -7,8 +7,9 @@
 | アプリケーション名                                   | バージョン(指定がある場合のみ、記載する)            | インストール条件                   |
 | ---------------------------------------------------- | --------------------------------------------------- | ---------------------------------- |
 | [Node.js](https://nodejs.org/ja/)                    | v12.18.3 以上 （動作確認済のバージョンは v12.18.3） | 必須                               |
+| [yarn](https://classic.yarnpkg.com/ja/)              |    1.21.1 以上 (それ以前のバージョンには[不具合がある](https://blog.cybozu.io/entry/npm-vulnerabilities-and-postinstall)ため)      | 必須 (依存するnpmパッケージのインストールおよび本プログラムの実行に使用) |
+| [Python](https://www.python.org/downloads/)              |    3 以上      | 必須 ([node-gyp](https://github.com/nodejs/node-gyp)が依存) |
 | [Visual Studio Code](https://code.visualstudio.com/) |                                                     | Visual Studio Code を利用する場合  |
-| [yarn](https://classic.yarnpkg.com/ja/)              |                                                     | 本プログラムを yarn で実行する場合 |
 
 ### 1-1. Visual Studio Code の拡張機能
 
