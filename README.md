@@ -2,4 +2,4 @@
 
 ## 開発者向け情報
 
-DEVELOPMENT.md を参照
+[DEVELOPMENT.md](./DEVELOPMENT.md) を参照
