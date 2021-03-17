@@ -1,6 +1,8 @@
 import { app, BrowserWindow } from "electron";
 import { client } from "electron-connect";
 const contextMenu = require("electron-context-menu");
+const isDev = require("electron-is-dev");
+
 contextMenu({
   prepend: (params, browserWindow) => [
     {
@@ -24,7 +26,10 @@ function createWindow() {
   });
   // window.webContents.openDevTools();
   window.loadFile("dist/contents/index.html");
-  client.create(window);
+
+  if (isDev) {
+    client.create(window);
+  }
 }
 
 app.allowRendererProcessReuse = false;
