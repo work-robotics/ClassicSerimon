@@ -58,6 +58,9 @@ class TextView {
   }
 
   public getColumnPosition(targetRow: number, x: number): number {
+    if (targetRow >= this.state.viewTextDatas.length) {
+      return 0;
+    }
     // オフセットの余白サイズを考慮したX座標を計算
     const offsetedX = x - this.params.lineNumbersWidth - this.params.paddingLineNumbersRight;
     // offsetedXがマイナスの場合（左にはみ出した状態）
