@@ -19,7 +19,6 @@ Visual Studio Code を利用する場合は、以下の拡張機能をインス�
 | ------------------------------------------------------------------------------------------------------- | ---------------- |
 | [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)                    | 任意             |
 | [TSLint](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) | 任意             |
-| [TSLint](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin) | 任意             |
 
 ---
 
