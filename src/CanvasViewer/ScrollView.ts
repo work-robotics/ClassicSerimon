@@ -78,7 +78,7 @@ class ScrollView {
 
   public updateContents() {
     // スクロールバーの表示設定
-    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
+    const rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
     if (rawDatasSize < this.state.rowNumber) {
       // スクロールバーを非表示に設定
       this.scrollBarBackground.visible(false);
@@ -153,7 +153,7 @@ class ScrollView {
   }
 
   public updateLayer(moveLastLine: boolean = false): void {
-    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
+    const rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
     if (this.updateScrollLayerTicking == false) {
       requestAnimationFrame(() => {
         // moveLastLineが有効な場合、scrollTopを最後尾に移動

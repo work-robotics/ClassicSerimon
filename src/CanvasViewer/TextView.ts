@@ -174,7 +174,7 @@ class TextView {
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
     // データ数からインデックスの位置を再計算
-    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
+    const rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
     if (rawDatasSize < this.state.rowNumber) {
       this.state.rowTopIndex = 0;
       this.state.rowBottomIndex = rawDatasSize;

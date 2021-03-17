@@ -1,6 +1,6 @@
 import Konva from "konva";
 import Params from "./Params";
-import State from "./State";
+import { ExtendArray, State } from "./State";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
@@ -185,21 +185,21 @@ class CanvasViewer {
   // テキストを追加する関数
   public addText(data: number[]): void {
     for (let i in data) {
-      this.state.rawDatas.push(data[i]);
+      this.state.rawDatas.append(data[i]);
     }
     // 各レイヤーに反映
     this.updateLayers();
   }
 
   public clearText(): void {
-    this.state.rawDatas = [];
+    this.state.rawDatas.clear();
     this.column_counter = 0;
     this.selectView.resetSelectIndex();
     // 各レイヤーに反映
     this.updateLayers();
   }
 
-  public getTexts(): number[] {
+  public getTexts(): ExtendArray {
     return this.state.rawDatas;
   }
 
