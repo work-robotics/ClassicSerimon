@@ -78,7 +78,8 @@ class ScrollView {
 
   public updateContents() {
     // スクロールバーの表示設定
-    if (this.state.rawDatas.length < this.state.rowNumber) {
+    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
+    if (rawDatasSize < this.state.rowNumber) {
       // スクロールバーを非表示に設定
       this.scrollBarBackground.visible(false);
       this.scrollBar.visible(false);
@@ -92,7 +93,7 @@ class ScrollView {
 
       // scrollHeightを更新
       this.state.scrollHeight = Math.ceil(
-        (this.state.rawDatas.length - this.state.rowNumber) * this.params.rowHeight +
+        (rawDatasSize - this.state.rowNumber) * this.params.rowHeight +
           this.mainStage.height() -
           this.params.paddingCanvasTop
       );
@@ -126,10 +127,10 @@ class ScrollView {
     }
 
     // rowTopIndex, rowBottomIndexの算出(スクロールが必要な状況でのみ)
-    if (this.state.rawDatas.length > this.state.rowNumber) {
+    if (rawDatasSize > this.state.rowNumber) {
       if (this.state.scrollHeight - this.mainStage.height() == this.state.scrollTop) {
-        this.state.rowTopIndex = this.state.rawDatas.length - this.state.rowNumber;
-        this.state.rowBottomIndex = this.state.rawDatas.length;
+        this.state.rowTopIndex = rawDatasSize - this.state.rowNumber;
+        this.state.rowBottomIndex = rawDatasSize;
       } else {
         this.state.rowTopIndex = Math.ceil(this.state.scrollTop / this.params.rowHeight);
         this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
@@ -152,13 +153,14 @@ class ScrollView {
   }
 
   public updateLayer(moveLastLine: boolean = false): void {
+    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
     if (this.updateScrollLayerTicking == false) {
       requestAnimationFrame(() => {
         // moveLastLineが有効な場合、scrollTopを最後尾に移動
         if (moveLastLine == true) {
           // scrollTopを先最後尾に持っていくにはscrollHeightを先に計算する必要がある
           this.state.scrollHeight = Math.ceil(
-            (this.state.rawDatas.length - this.state.rowNumber) * this.params.rowHeight +
+            (rawDatasSize - this.state.rowNumber) * this.params.rowHeight +
               this.mainStage.height() -
               this.params.paddingCanvasTop
           );

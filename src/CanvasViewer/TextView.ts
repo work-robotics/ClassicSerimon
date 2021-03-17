@@ -1,3 +1,4 @@
+import { Cookies } from "electron";
 import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
@@ -173,9 +174,10 @@ class TextView {
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
     // データ数からインデックスの位置を再計算
-    if (this.state.rawDatas.length < this.state.rowNumber) {
+    const rawDatasSize = Math.ceil(this.state.rawDatas.length / this.params.maxLineNum);
+    if (rawDatasSize < this.state.rowNumber) {
       this.state.rowTopIndex = 0;
-      this.state.rowBottomIndex = this.state.rawDatas.length;
+      this.state.rowBottomIndex = rawDatasSize;
     } else {
       this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
     }
@@ -183,19 +185,22 @@ class TextView {
     let newTextLineNumContent = "";
     this.state.viewTextDatas = [];
     this.state.renderDatasWidth = [];
-    this.state.rawDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
+    for (var i = 0; i < this.state.rowNumber; i++) {
       this.state.viewTextDatas.push("");
       this.state.renderDatasWidth.push([]);
-
-      for (const strs of this.binaryFormatStr(data)) {
+      for (const strs of this.binaryFormatStr(
+        this.state.rawDatas.slice(
+          (this.state.rowTopIndex + i) * this.params.maxLineNum,
+          (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
+        )
+      )) {
         for (const s of strs) {
-          this.state.viewTextDatas[index] += s;
-          this.state.renderDatasWidth[index].push(this.getTextWidth(s));
+          this.state.viewTextDatas[i] += s;
+          this.state.renderDatasWidth[i].push(this.getTextWidth(s));
         }
       }
-
-      newTextLineNumContent += ("0000000000" + (index + this.state.rowTopIndex)).slice(-8) + "\n";
-    });
+      newTextLineNumContent += ("0000000000" + (i + this.state.rowTopIndex)).slice(-8) + "\n";
+    }
     this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
   }

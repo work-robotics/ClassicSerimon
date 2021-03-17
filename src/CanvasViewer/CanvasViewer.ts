@@ -107,18 +107,36 @@ class CanvasViewer {
     if (this.state.selectedIndexs.top.row >= 0) {
       let output = "";
       output += this.textView
-        .binaryFormatStr(this.state.rawDatas[this.state.selectedIndexs.top.row])
+        .binaryFormatStr(
+          this.state.rawDatas.slice(
+            (this.state.rowTopIndex + this.state.selectedIndexs.top.row) * this.params.maxLineNum,
+            (this.state.rowTopIndex + this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
+          )
+        )
         .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
       output += "\n";
-      this.state.rawDatas
-        .slice(this.state.selectedIndexs.top.row + 1, this.state.selectedIndexs.bottom.row)
-        .forEach((data) => {
-          output += this.textView.binaryFormatStr(data);
-          output += "\n";
-        });
+      this.state.rawDatas.slice(
+        (this.state.rowTopIndex + this.state.selectedIndexs.top.row) * this.params.maxLineNum,
+        (this.state.rowTopIndex + this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
+      );
+
+      for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
+        output += this.textView.binaryFormatStr(
+          this.state.rawDatas.slice(
+            (this.state.rowTopIndex + i) * this.params.maxLineNum,
+            (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
+          )
+        );
+        output += "\n";
+      }
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
         output += this.textView
-          .binaryFormatStr(this.state.rawDatas[this.state.selectedIndexs.bottom.row])
+          .binaryFormatStr(
+            this.state.rawDatas.slice(
+              (this.state.rowTopIndex + this.state.selectedIndexs.bottom.row) * this.params.maxLineNum,
+              (this.state.rowTopIndex + this.state.selectedIndexs.bottom.row + 1) * this.params.maxLineNum
+            )
+          )
           .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
       }
       event.clipboardData.setData("text/plain", output);
@@ -166,16 +184,8 @@ class CanvasViewer {
 
   // テキストを追加する関数
   public addText(data: number[]): void {
-    if (this.state.rawDatas.length == 0) {
-      this.state.rawDatas.push([]);
-    }
     for (let i in data) {
-      if (this.column_counter == this.params.maxLineNum) {
-        this.state.rawDatas.push([]);
-        this.column_counter = 0;
-      }
-      this.state.rawDatas[this.state.rawDatas.length - 1][this.column_counter] = data[i];
-      this.column_counter++;
+      this.state.rawDatas.push(data[i]);
     }
     // 各レイヤーに反映
     this.updateLayers();
@@ -189,7 +199,7 @@ class CanvasViewer {
     this.updateLayers();
   }
 
-  public getTexts(): number[][] {
+  public getTexts(): number[] {
     return this.state.rawDatas;
   }
 
