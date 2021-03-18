@@ -1,5 +1,22 @@
 import React, { createContext, useState } from "react";
-import { DeviceStatus, BaudrateStatus, StateContextType } from "./Types";
+
+// Common
+export type StateContextType<T> = {
+  state: T;
+  setState?: React.Dispatch<React.SetStateAction<T>>;
+};
+
+// BaudrateSelector
+export type BaudrateStatus = {
+  selectedBaudrate: number;
+};
+
+// DeviceSelector
+export type DeviceStatus = {
+  selectedDevice: string;
+};
+
+// ------------------------------------------------------------------
 
 // コンテキストの作成
 export const BaudrateSelectorContext = createContext<StateContextType<BaudrateStatus>>({
