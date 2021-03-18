@@ -97,12 +97,18 @@ const Monitor: React.FC = () => {
       .showSaveDialog(null, { properties: ["createDirectory"] })
       .then((result) => {
         if (!result.canceled) {
-          fs.writeFile(result.filePath, canvasViewerRef.current.getCanvasViewer().getTexts().join("\n"), (error) => {
-            if (error != null) {
-              alert("Save Error.");
-              return;
+          const fd = fs.openSync(result.filePath, "w");
+          const textSize = canvasViewerRef.current.getCanvasViewer().getTextsSize();
+          const blockSize = 1024;
+          for (var i = 0; i < Math.ceil(textSize / blockSize); i++) {
+            const data = canvasViewerRef.current.getCanvasViewer().getTextsSlice(i * blockSize, (i + 1) * blockSize);
+            let bufferArray = Buffer.alloc(data.length);
+            for (let k = 0; k < data.length; k++) {
+              bufferArray.writeUInt8(data[k], k);
             }
-          });
+            fs.writeSync(fd, bufferArray);
+          }
+          fs.closeSync(fd);
         }
         if (SerialPortRef.current != undefined) {
           SerialPortRef.current.resume();

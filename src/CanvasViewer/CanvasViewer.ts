@@ -203,6 +203,14 @@ class CanvasViewer {
     return this.state.rawDatas;
   }
 
+  public getTextsSlice(s: number, e: number): number[] {
+    return this.state.rawDatas.slice(s, e);
+  }
+
+  public getTextsSize(): number {
+    return this.state.rawDatas.size();
+  }
+
   // ステージの大きさを変更したいときに呼び出す
   setStageSize(width: number, height: number) {
     // ステージの大きさを変更
