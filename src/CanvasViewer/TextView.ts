@@ -141,7 +141,7 @@ class TextView {
 
     let newTextTopNumContent = "";
     for (let i = 0; i < this.params.maxLineNum; i++) {
-      newTextTopNumContent += ("00" + i.toString()).substr(-2) + " ";
+      newTextTopNumContent += ("00" + (i + 1).toString()).substr(-2) + " ";
     }
     this.textTopNumContent.text(newTextTopNumContent);
 
@@ -199,7 +199,7 @@ class TextView {
           this.state.renderDatasWidth[i].push(this.getTextWidth(s));
         }
       }
-      newTextLineNumContent += ("0000000000" + (i + this.state.rowTopIndex)).slice(-8) + "\n";
+      newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
     }
     this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
