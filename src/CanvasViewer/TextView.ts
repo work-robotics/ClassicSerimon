@@ -141,7 +141,7 @@ class TextView {
 
     let newTextTopNumContent = "";
     for (let i = 0; i < this.params.maxLineNum; i++) {
-      newTextTopNumContent += ("00" + i.toString(16).toUpperCase()).substr(-2) + " ";
+      newTextTopNumContent += ("00" + i.toString()).substr(-2) + " ";
     }
     this.textTopNumContent.text(newTextTopNumContent);
 
