@@ -6,13 +6,11 @@ const electron = require("electron-connect").server.create();
 const [mainConfig, rendererConfig] = require("./webpack.config");
 
 const Main = (done) => {
-  webpackStream(mainConfig, webpack).pipe(dest("./dist"));
-  done();
+  return webpackStream(mainConfig, webpack).pipe(dest("./dist"));
 };
 
 const Renderer = (done) => {
-  webpackStream(rendererConfig, webpack).pipe(dest("./dist/contents"));
-  done();
+  return webpackStream(rendererConfig, webpack).pipe(dest("./dist/contents"));
 };
 
 const Restart = (done) => {
