@@ -1,0 +1,18 @@
+productName: "serimon"
+appId: "jp.co.work-robotics.serimon"
+files:
+  - "dist/"
+directories:
+  output: release
+buildDependenciesFromSource : true
+win:
+  target: 
+    - target: portable
+      arch:
+        - x64
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
