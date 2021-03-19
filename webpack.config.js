@@ -1,10 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
-const ElectronReloadWebpackPlugin = require("electron-reload-webpack-plugin")({
-  path: path.join(__dirname),
-  logLevel: 0,
-});
 
 var electron_main = {
   mode: "development",
@@ -44,7 +40,6 @@ var electron_renderer = {
         { from: "./src/*.css", to: "[name].[ext]" },
       ],
     }),
-    ElectronReloadWebpackPlugin(),
   ],
 };
 
