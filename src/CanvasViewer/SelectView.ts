@@ -50,12 +50,12 @@ class SelectView {
     };
 
     // セレクトボックスの共通設定
-    const SelectConfig: Konva.RectConfig = {
-      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight,
+    const lineConfig: Konva.LineConfig = {
+      points: [],
       fill: this.params.selectCellColor,
-      opacity: 0.5,
-      width: 5,
-      height: this.params.rowHeight,
+      opacity: 0.2,
+      strokeEnabled: false,
+      closed: true,
     };
 
     // テキスト検査用のテキスト
@@ -64,14 +64,6 @@ class SelectView {
       fontFamily: this.params.fontFamily,
       lineHeight: this.params.rowHeight / this.params.fontSize,
     });
-
-    const lineConfig: Konva.LineConfig = {
-      points: [],
-      fill: this.params.selectCellColor,
-      opacity: 0.2,
-      strokeEnabled: false,
-      closed: true,
-    };
 
     this.selectPolyTopContents = new Konva.Line({ ...lineConfig });
     this.selectPolyMiddleContents = new Konva.Line({ ...lineConfig });
