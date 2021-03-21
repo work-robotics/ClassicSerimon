@@ -1,7 +1,6 @@
 export class Params {
   public rowHeight: number;
   public fontSize: number;
-  public selectCellColor: string;
   public fontFamily: string;
   public lineNumbersWidth: number;
   public paddingLineNumbersRight: number;
@@ -12,7 +11,6 @@ export class Params {
   constructor() {
     this.rowHeight = 20;
     this.fontSize = 16;
-    this.selectCellColor = "#0000ff";
     this.fontFamily = "JetBrains Mono, Source Han Code JP, Menlo, Consolas";
     this.lineNumbersWidth = 90;
     this.paddingLineNumbersRight = 10;

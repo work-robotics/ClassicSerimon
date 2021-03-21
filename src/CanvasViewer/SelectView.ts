@@ -52,7 +52,7 @@ class SelectView {
     // セレクトボックスの共通設定
     const lineConfig: Konva.LineConfig = {
       points: [],
-      fill: this.params.selectCellColor,
+      fill: "#0000ff",
       opacity: 0.2,
       strokeEnabled: false,
       closed: true,
