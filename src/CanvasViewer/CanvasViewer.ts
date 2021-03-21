@@ -1,5 +1,5 @@
 import Konva from "konva";
-import Params from "./Params";
+import Params, { UserConfig } from "./Params";
 import { ExtendArray, State } from "./State";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
@@ -15,7 +15,15 @@ class CanvasViewer {
 
   private column_counter: number;
 
-  constructor(id: string) {
+  constructor(
+    id: string,
+    option: UserConfig = {
+      rowHeight: 20,
+      fontSize: 16,
+      fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
+      maxLineNum: 20,
+    }
+  ) {
     // 関数をバインド
     this.mouseMoveEvent = this.mouseMoveEvent.bind(this);
     this.mouseDownEvent = this.mouseDownEvent.bind(this);
@@ -29,7 +37,7 @@ class CanvasViewer {
 
     // 初期化
     this.mainStage = new Konva.Stage({ container: id });
-    this.params = new Params();
+    this.params = new Params(option);
     this.state = new State();
     this.textView = new TextView(this.mainStage, this.params, this.state);
     this.scrollView = new ScrollView(
@@ -201,6 +209,16 @@ class CanvasViewer {
 
   public getTexts(): ExtendArray {
     return this.state.rawDatas;
+  }
+
+  public setParam(data: UserConfig) {
+    this.params.userConfig = data;
+    // レイヤーを再描画
+    this.mainStage.destroyChildren();
+    this.textView.initLayer();
+    this.selectView.initLayer();
+    this.scrollView.initLayer();
+    this.updateLayers();
   }
 
   public getTextsSlice(s: number, e: number): number[] {

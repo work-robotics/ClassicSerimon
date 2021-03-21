@@ -44,7 +44,7 @@ class ScrollView {
   }
 
   // レイヤーの初期化関数
-  private initLayer(): void {
+  public initLayer(): void {
     this.scrollLayer = new Konva.Layer();
     // スクロールバーの共通設定
     const BarConfig: Konva.RectConfig = {

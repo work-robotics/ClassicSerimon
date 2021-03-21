@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import { client } from "electron-connect";
 const contextMenu = require("electron-context-menu");
 const isDev = require("electron-is-dev");
+const Store = require("electron-store");
 
 contextMenu({
   prepend: (params, browserWindow) => [
@@ -12,6 +13,7 @@ contextMenu({
 });
 
 function createWindow() {
+  Store.initRenderer();
   const window = new BrowserWindow({
     width: 800,
     height: 600,

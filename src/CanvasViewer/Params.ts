@@ -1,54 +1,62 @@
-export class Params {
-  private _rowHeight: number;
-  private _fontSize: number;
-  private _fontFamily: string;
-  private _maxLineNum: number;
+export type UserConfig = {
+  fontSize: number;
+  rowHeight: number;
+  fontFamily: string;
+  maxLineNum: number;
+};
 
+export class Params {
+  private _userConfig: UserConfig;
   private _lineNumbersWidth: number;
   private _paddingLineNumbersRight: number;
   private _topNumberHeight: number;
 
-  constructor() {
-    this._rowHeight = 20;
-    this._fontSize = 16;
-    this._fontFamily = "JetBrains Mono, Source Han Code JP, Menlo, Consolas";
-    this._maxLineNum = 20;
-
+  constructor(userConfig: UserConfig) {
+    this._userConfig = userConfig;
     this._lineNumbersWidth = 90;
     this._paddingLineNumbersRight = 10;
     this._topNumberHeight = 30;
   }
 
+  get userConfig(): UserConfig {
+    return this._userConfig;
+  }
+
+  set userConfig(data: UserConfig) {
+    this._userConfig = data;
+    console.log("set");
+  }
+
   get rowHeight(): number {
-    return this._rowHeight;
+    return this._userConfig.rowHeight;
   }
 
   set rowHeight(data: number) {
-    this._rowHeight = data;
+    this._userConfig.rowHeight = data;
   }
 
   get fontSize(): number {
-    return this._fontSize;
+    return this._userConfig.fontSize;
   }
 
   set fontSize(data: number) {
-    this._fontSize = data;
+    this._userConfig.fontSize = data;
   }
 
   get fontFamily(): string {
-    return this._fontFamily;
+    return this._userConfig.fontFamily;
   }
 
   set fontFamily(data: string) {
-    this._fontFamily = data;
+    this._userConfig.fontFamily = data;
   }
 
   get maxLineNum(): number {
-    return this._maxLineNum;
+    return this._userConfig.maxLineNum;
   }
 
   set maxLineNum(data: number) {
-    this._maxLineNum = data;
+    this._userConfig.maxLineNum = data;
   }
 
   get lineNumbersWidth(): number {

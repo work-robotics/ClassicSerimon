@@ -3,6 +3,8 @@ import Konva from "konva";
 import { css } from "emotion";
 import CanvasViewer from "./CanvasViewer/CanvasViewer";
 import uniqueId from "lodash/uniqueId";
+import { UserConfig } from "./CanvasViewer/Params";
+import ConfigStore from "./ConfigStore";
 
 export type CanvasViewerRef = {
   getCanvasViewer(): CanvasViewer;
@@ -18,7 +20,10 @@ const ReactCanvasViewer = forwardRef<CanvasViewerRef>((props, ref) => {
   const elementRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    CanvasViewerRef.current = new CanvasViewer(elementRef.current.id);
+    const readConfig: UserConfig = ConfigStore.getData();
+    ConfigStore.store.onDidAnyChange(onDidChangeStore);
+
+    CanvasViewerRef.current = new CanvasViewer(elementRef.current.id, readConfig);
     function resizeEvent() {
       const width: number = elementRef.current.clientWidth;
       const height: number = elementRef.current.clientHeight;
@@ -36,6 +41,10 @@ const ReactCanvasViewer = forwardRef<CanvasViewerRef>((props, ref) => {
       },
     };
   });
+
+  function onDidChangeStore(data: UserConfig) {
+    CanvasViewerRef.current.setParam(data);
+  }
 
   return (
     <>

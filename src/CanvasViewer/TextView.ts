@@ -83,7 +83,7 @@ class TextView {
   }
 
   // レイヤー初期化関数
-  private initLayer(): void {
+  public initLayer(): void {
     this.textLayer = new Konva.Layer();
 
     // インデックスの初期化

@@ -39,7 +39,7 @@ class SelectView {
   }
 
   // レイヤーの初期化関数
-  private initLayer(): void {
+  public initLayer(): void {
     this.selectLayer = new Konva.Layer({ listening: false });
 
     // セレクト情報の初期化
