@@ -50,7 +50,7 @@ export class State {
   public rowBottomIndex: number;
   public rawDatas: ExtendArray;
   public viewTextDatas: string[];
-  public renderDatasWidth: number[][];
+  public renderDataWidth: number[];
   public scrollHeight: number;
   public scrollTop: number;
   public rowNumber: number;
@@ -58,6 +58,7 @@ export class State {
   public mouseOriginPosition: { x: number; y: number };
   public mousePosition: { x: number; y: number };
   public mouseOverIndex: { x: number; y: number };
+  public mouseOverPastIndex: { x: number; y: number };
   public isMovedMouse: boolean;
   public enableAutoScroll: boolean;
   public selectDirection: string;
@@ -72,13 +73,14 @@ export class State {
     this.rowTopIndex = 0;
     this.rowBottomIndex = 0;
     this.rawDatas = new ExtendArray();
-    this.renderDatasWidth = [];
+    this.renderDataWidth = [];
     this.scrollHeight = 0;
     this.scrollTop = 0;
     this.rowNumber = 0;
     this.mouseOriginPosition = { x: 0, y: 0 };
     this.mousePosition = { x: 0, y: 0 };
     this.mouseOverIndex = { x: 0, y: 0 };
+    this.mouseOverPastIndex = { x: 0, y: 0 };
     this.isMovedMouse = false;
     this.selectedIndexs = {
       top: { row: -1, start: -1, end: -1 },

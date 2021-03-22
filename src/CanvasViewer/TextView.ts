@@ -56,6 +56,7 @@ class TextView {
 
     // カーソル上の列番号を算出
     this.state.mouseOverIndex.x = this.getColumnPosition(this.state.mouseOverIndex.y, this.state.mousePosition.x);
+    this.state.mouseOverPastIndex.y = this.state.mouseOverIndex.y;
   }
 
   public getColumnPosition(targetRow: number, x: number): number {
@@ -70,8 +71,16 @@ class TextView {
     }
     // 左から探索してヒットした場所を返す
     let sum = 0;
+
+    if (this.state.mouseOverPastIndex.y != this.state.mouseOverIndex.y) {
+      this.state.renderDataWidth = [];
+      for (var i = 0; i < this.state.viewTextDatas[targetRow].length; i++) {
+        this.state.renderDataWidth.push(this.getTextWidth(this.state.viewTextDatas[targetRow][i]));
+      }
+    }
+
     for (let index = 0; index < this.state.viewTextDatas[targetRow].length; index++) {
-      const buf = this.state.renderDatasWidth[targetRow][index] / 2;
+      const buf = this.state.renderDataWidth[index] / 2;
       sum += buf;
       if (sum > offsetedX) {
         return index;
@@ -184,10 +193,8 @@ class TextView {
 
     let newTextLineNumContent = "";
     this.state.viewTextDatas = [];
-    this.state.renderDatasWidth = [];
     for (var i = 0; i < this.state.rowNumber; i++) {
       this.state.viewTextDatas.push("");
-      this.state.renderDatasWidth.push([]);
       for (const strs of this.binaryFormatStr(
         this.state.rawDatas.slice(
           (this.state.rowTopIndex + i) * this.params.maxLineNum,
@@ -196,7 +203,6 @@ class TextView {
       )) {
         for (const s of strs) {
           this.state.viewTextDatas[i] += s;
-          this.state.renderDatasWidth[i].push(this.getTextWidth(s));
         }
       }
       newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
