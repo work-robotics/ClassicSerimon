@@ -24,7 +24,6 @@ export class Params {
 
   set userConfig(data: UserConfig) {
     this._userConfig = data;
-    console.log("set");
   }
 
   get rowHeight(): number {
