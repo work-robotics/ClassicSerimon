@@ -185,6 +185,7 @@ class CanvasViewer {
   private updateDragScrollHandler() {
     // セレクタ処理
     this.textView.updateContents();
+    this.scrollView.updateContents();
     this.selectView.selectEvent();
     // 各レイヤーに反映
     this.updateLayers();
