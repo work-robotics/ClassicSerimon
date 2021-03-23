@@ -80,7 +80,7 @@ export class State {
     this.mouseOriginPosition = { x: 0, y: 0 };
     this.mousePosition = { x: 0, y: 0 };
     this.mouseOverIndex = { x: 0, y: 0 };
-    this.mouseOverPastIndex = { x: 0, y: 0 };
+    this.mouseOverPastIndex = { x: -1, y: -1 };
     this.isMovedMouse = false;
     this.selectedIndexs = {
       top: { row: -1, start: -1, end: -1 },
