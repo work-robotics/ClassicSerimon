@@ -1,0 +1,63 @@
+name: Electron CD
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-2019, ubuntu-18.04]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install npm packages
+        run: |
+          yarn install
+
+      - name: Publish
+        run: |
+          yarn run build
+          yarn run dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Optimize application
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cd release
+          tar cvf serimon-appimage.tar *.AppImage
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: serimon-${{ matrix.os }}
+          if-no-files-found: ignore
+          path: |
+            release/*.exe
+            release/*.app
+            release/*.dmg
+            release/serimon-appimage.tar
