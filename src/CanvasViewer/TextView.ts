@@ -2,16 +2,17 @@ import { Cookies } from "electron";
 import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
+import Common from "./Common";
 
 class TextView {
   private params: Params;
   private state: State;
+  private common: Common;
   private mainStage: Konva.Stage;
 
   /* テキスト */
   private textLayer: Konva.Layer | undefined;
   private textConfig: Konva.TextConfig | undefined;
-  private tempText: Konva.Text | undefined;
 
   private textDataContent: Konva.Text;
 
@@ -25,11 +26,12 @@ class TextView {
 
   private updateTextLayerTicking: boolean;
 
-  constructor(stage: Konva.Stage, params: Params, state: State) {
+  constructor(stage: Konva.Stage, params: Params, state: State, common: Common) {
     // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;
+    this.common = common;
 
     // フレーム制御のためのフラグ初期化
     this.updateTextLayerTicking = false;
@@ -39,11 +41,6 @@ class TextView {
 
     // レイヤーの初期化
     this.initLayer();
-  }
-
-  public getTextWidth(data: string): number {
-    this.tempText.text(data);
-    return this.tempText.getTextWidth();
   }
 
   public calcMouseOverIndex() {
@@ -77,7 +74,7 @@ class TextView {
     if (this.state.mouseOverPastIndex.y != this.state.mouseOverIndex.y) {
       this.state.renderDataWidth = [];
       for (var i = 0; i < this.state.viewTextDatas[targetRow].length; i++) {
-        this.state.renderDataWidth.push(this.getTextWidth(this.state.viewTextDatas[targetRow][i]));
+        this.state.renderDataWidth.push(this.common.getTextWidth(this.state.viewTextDatas[targetRow][i]));
       }
     }
 
@@ -130,9 +127,6 @@ class TextView {
       fontFamily: this.params.fontFamily,
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
-
-    // テキスト検査用のテキスト
-    this.tempText = new Konva.Text({ ...this.textConfig });
 
     // データ表示のテキスト
     this.textDataContent = new Konva.Text({

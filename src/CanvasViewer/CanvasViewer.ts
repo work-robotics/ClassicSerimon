@@ -1,6 +1,7 @@
 import Konva from "konva";
 import Params, { UserConfig } from "./Params";
 import { ExtendArray, State } from "./State";
+import Common from "./Common";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
@@ -9,6 +10,7 @@ class CanvasViewer {
   private mainStage: Konva.Stage;
   private params: Params;
   private state: State;
+  private common: Common;
   private textView: TextView;
   private scrollView: ScrollView;
   private selectView: SelectView;
@@ -29,22 +31,19 @@ class CanvasViewer {
     this.mainStage = new Konva.Stage({ container: id });
     this.params = new Params(option);
     this.state = new State();
-    this.textView = new TextView(this.mainStage, this.params, this.state);
+    this.common = new Common(this.mainStage, this.params, this.state);
+    this.textView = new TextView(this.mainStage, this.params, this.state, this.common);
     this.scrollView = new ScrollView(
       this.mainStage,
       this.params,
       this.state,
+      this.common,
       this.updateScrollHandler,
       this.updateDragScrollHandler,
       this.mouseEnterHandler,
       this.mouseLeaveHandler
     );
-    this.selectView = new SelectView(this.mainStage, this.params, this.state);
-
-    // 事前に文字幅のテーブルを作成
-    for (let i = 0; i < 256; i++) {
-      this.params.asciiFontWidthTable.push(this.textView.getTextWidth(String.fromCharCode(i)));
-    }
+    this.selectView = new SelectView(this.mainStage, this.params, this.state, this.common);
 
     // イベントの登録
     this.mainStage.container().addEventListener("mousedown", this.mouseDownEvent);
@@ -237,6 +236,7 @@ class CanvasViewer {
     this.params.userConfig = data;
     // レイヤーを再描画
     this.mainStage.destroyChildren();
+    this.common.init();
     this.textView.initLayer();
     this.selectView.initLayer();
     this.scrollView.initLayer();

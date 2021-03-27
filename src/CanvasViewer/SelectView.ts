@@ -1,12 +1,13 @@
 import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
+import Common from "./Common";
 
 class SelectView {
   private params: Params;
   private state: State;
+  private common: Common;
   private mainStage: Konva.Stage;
-  private tempText: Konva.Text;
 
   /* セレクト */
   private selectLayer: Konva.Layer | undefined;
@@ -17,11 +18,12 @@ class SelectView {
 
   private updateSelectLayerTicking: boolean;
 
-  constructor(stage: Konva.Stage, params: Params, state: State) {
+  constructor(stage: Konva.Stage, params: Params, state: State, common: Common) {
     // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;
+    this.common = common;
 
     // フレーム制御のためのフラグ初期化
     this.updateSelectLayerTicking = false;
@@ -58,13 +60,6 @@ class SelectView {
       closed: true,
     };
 
-    // テキスト検査用のテキスト
-    this.tempText = new Konva.Text({
-      fontSize: this.params.fontSize,
-      fontFamily: this.params.fontFamily,
-      lineHeight: this.params.rowHeight / this.params.fontSize,
-    });
-
     this.selectPolyTopContents = new Konva.Line({ ...lineConfig });
     this.selectPolyMiddleContents = new Konva.Line({ ...lineConfig });
     this.selectPolyBottomContents = new Konva.Line({ ...lineConfig });
@@ -74,11 +69,6 @@ class SelectView {
     this.selectLayer.add(this.selectPolyMiddleContents);
     this.selectLayer.add(this.selectPolyBottomContents);
     this.mainStage.add(this.selectLayer);
-  }
-
-  private getTextWidth(data: string): number {
-    this.tempText.text(data);
-    return this.tempText.getTextWidth();
   }
 
   public selectEvent() {
@@ -191,8 +181,8 @@ class SelectView {
       const h = this.params.rowHeight;
       // 上段
       if (topRow == rowTopIndex + index && topStart >= 0 && topEnd >= 0) {
-        const startX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, topStart));
-        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, topEnd));
+        const startX = this.common.getTextWidth(this.state.viewTextDatas[index].slice(0, topStart));
+        const endX = this.common.getTextWidth(this.state.viewTextDatas[index].slice(0, topEnd));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = startX + this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX - startX;
@@ -200,8 +190,8 @@ class SelectView {
       }
       // 下段
       if (bottomRow == rowTopIndex + index && bottomStart >= 0 && bottomStart >= 0) {
-        const startX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomStart));
-        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomEnd));
+        const startX = this.common.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomStart));
+        const endX = this.common.getTextWidth(this.state.viewTextDatas[index].slice(0, bottomEnd));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = startX + this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX - startX;
@@ -209,8 +199,8 @@ class SelectView {
       }
       // 中間層
       if (topRow < rowTopIndex + index && bottomRow > rowTopIndex + index) {
-        const middleWidth = this.getTextWidth(data);
-        const endX = this.getTextWidth(this.state.viewTextDatas[index].slice(0, middleWidth + 1));
+        const middleWidth = this.common.getTextWidth(data);
+        const endX = this.common.getTextWidth(this.state.viewTextDatas[index].slice(0, middleWidth + 1));
         const y = this.params.paddingCanvasTop + index * this.params.rowHeight;
         const x = this.params.lineNumbersWidth + this.params.paddingLineNumbersRight;
         const w = endX;

@@ -1,10 +1,12 @@
 import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
+import Common from "./Common";
 
 class ScrollView {
   private params: Params;
   private state: State;
+  private common: Common;
   private mainStage: Konva.Stage;
 
   /* スクロール */
@@ -22,6 +24,7 @@ class ScrollView {
     stage: Konva.Stage,
     params: Params,
     state: State,
+    common: Common,
     updateHandler: () => void,
     updateDragHandler: () => void,
     mouseEnterHandler: () => void = () => {},
@@ -31,6 +34,7 @@ class ScrollView {
     this.mainStage = stage;
     this.params = params;
     this.state = state;
+    this.common = common;
     this.updateHandler = updateHandler;
     this.updateDragHandler = updateDragHandler;
     this.mouseEnterHandler = mouseEnterHandler;
