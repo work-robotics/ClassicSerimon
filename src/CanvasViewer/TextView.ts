@@ -159,6 +159,12 @@ class TextView {
     }
     this.textTopNumContent.text(newTextTopNumContent);
 
+    if (this.params.userConfig.asciiMode) {
+      this.textTopNumContent.visible(false);
+    } else {
+      this.textTopNumContent.visible(true);
+    }
+
     // レイヤに追加
     this.textLayer.add(this.textTopBackground);
     this.textLayer.add(this.textTopNumContent);
