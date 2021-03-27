@@ -7,10 +7,13 @@ import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
 
 class CanvasViewer {
+  // 描画用のステージ
   private mainStage: Konva.Stage;
+  // 共有で使用するコンポーネント
   private params: Params;
   private state: State;
   private common: Common;
+  // 各レイヤーコンポーネント
   private textView: TextView;
   private scrollView: ScrollView;
   private selectView: SelectView;
@@ -27,7 +30,7 @@ class CanvasViewer {
     this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
     this.copyEvent = this.copyEvent.bind(this);
 
-    // 初期化
+    // 各コンポーネントを初期化
     this.mainStage = new Konva.Stage({ container: id });
     this.params = new Params(option);
     this.state = new State();
@@ -55,58 +58,76 @@ class CanvasViewer {
     this.mainStage.container().style.overflow = "hidden";
   }
 
+  // マウスホイールのイベント関数
   private mouseWheelEvent(event: WheelEvent): void {
+    // ホイールの差分を加算する
     this.state.scrollTop += event.deltaY;
+    // スクロールが一番下までいった場合はオートスクロールを有効にする
     this.state.enableAutoScroll = this.state.scrollHeight - this.mainStage.height() < this.state.scrollTop;
+
+    // マウスカーソルの動作フラグが立っている場合
     if (this.state.isMovedMouse == true) {
       // scrollTopを変更したので強制的に反映
       this.scrollView.updateContents();
       // ドラッグスクロールと同じ処理を実行
       this.updateDragScrollHandler();
     } else {
-      this.updateScrollHandler();
+      // レイヤを更新
+      this.updateLayers();
     }
   }
 
+  // マウスの左右クリックを押した場合のイベント関数
   private mouseDownEvent(event: MouseEvent): void {
-    // 左クリックの場合
+    // 左クリックの場合でのみ処理
     if (event.button == 0) {
+      // カーソルの移動 & クリックをやめたときのイベントを登録
       document.addEventListener("mousemove", this.mouseMoveEvent);
       document.addEventListener("mouseup", this.mouseUpEvent);
     }
   }
 
+  // カーソル移動時のイベント関数
   private mouseMoveEvent(event: MouseEvent): void {
+    // オートスクロールを停止する
     this.state.enableAutoScroll = false;
-    // セレクタ初期化
+
+    // 選択レイヤーのインデックスを初期化
     if (this.state.isMovedMouse == false) {
       this.selectView.resetSelectIndex();
     }
+
     // マウス座標を更新
     if (this.state.isMovedMouse == false) {
       this.state.mouseOriginPosition.x = event.x - this.mainStage.container().getBoundingClientRect().left;
       this.state.mouseOriginPosition.y =
         event.y - this.mainStage.container().getBoundingClientRect().top - this.params.paddingCanvasTop;
     }
+
+    // カーソル移動済みフラグを更新
     this.state.isMovedMouse = true;
+
+    // 現在のマウスカーソルの位置を計算
     this.state.mousePosition.x = event.x - this.mainStage.container().getBoundingClientRect().left;
     this.state.mousePosition.y =
       event.y - this.mainStage.container().getBoundingClientRect().top - this.params.paddingCanvasTop;
 
-    // ドラッグスクロール
+    // ドラッグスクロールする状況か確認 & 必要に応じて自動的に実行する
     this.scrollView.mouseDragScrollEvent();
 
     // カーソル上の行・列番号を計算
     this.textView.calcMouseOverIndex();
-    // セレクタ処理
+    // 選択部分を計算する
     this.selectView.selectEvent();
-    // 各レイヤーに反映
+    // 各レイヤーを更新
     this.updateLayers();
   }
 
+  // コピー時のイベント関数
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
       let output = "";
+      // 上段の指定範囲のデータを取り出す
       output += this.textView
         .binaryFormatStr(
           this.state.rawDatas.slice(
@@ -116,11 +137,8 @@ class CanvasViewer {
         )
         .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
       output += "\n";
-      this.state.rawDatas.slice(
-        (this.state.rowTopIndex + this.state.selectedIndexs.top.row) * this.params.maxLineNum,
-        (this.state.rowTopIndex + this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
-      );
 
+      // 中段の指定範囲のデータを取り出す
       for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
         output += this.textView.binaryFormatStr(
           this.state.rawDatas.slice(
@@ -130,6 +148,8 @@ class CanvasViewer {
         );
         output += "\n";
       }
+
+      // 下段の指定範囲のデータを取り出す
       if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
         output += this.textView
           .binaryFormatStr(
@@ -142,27 +162,33 @@ class CanvasViewer {
       }
       event.clipboardData.setData("text/plain", output);
       event.preventDefault();
-      console.log("Copy Done.");
     }
   }
 
+  // マウスのクリックが終了した際に呼ばれるイベント関数
   private mouseUpEvent(event): void {
     if (this.state.isMovedMouse == false) {
+      // 選択インデックスを初期化
       this.selectView.resetSelectIndex();
+      // 各レイヤを更新
       this.updateLayers();
     }
+
     // マウスボタンを上げたらドラッグスクロールを強制終了
     this.scrollView.mouseDragScrollStop();
     document.removeEventListener("mousemove", this.mouseMoveEvent);
     document.removeEventListener("mouseup", this.mouseUpEvent);
+    // 移動済みフラグを解除
     this.state.isMovedMouse = false;
   }
 
+  // マウスがエリア内に入ったときに実行されるイベント関数
   private mouseEnterHandler() {
     this.mainStage.container().removeEventListener("mousedown", this.mouseDownEvent);
     this.mainStage.container().style.cursor = "auto";
   }
 
+  // マウスがエリア外に出たときに実行されるイベント関数
   private mouseLeaveHandler() {
     this.mainStage.container().addEventListener("mousedown", this.mouseDownEvent);
     this.mainStage.container().style.cursor = "text";
@@ -170,7 +196,7 @@ class CanvasViewer {
 
   // スクロール更新時にテキストを再描画
   private updateScrollHandler() {
-    // 各レイヤーに反映
+    // 各レイヤーを更新
     this.updateLayers();
   }
 
@@ -180,7 +206,7 @@ class CanvasViewer {
     this.textView.updateContents();
     this.scrollView.updateContents();
     this.selectView.selectEvent();
-    // 各レイヤーに反映
+    // 各レイヤーを更新
     this.updateLayers();
   }
 
@@ -201,6 +227,7 @@ class CanvasViewer {
     this.updateLayers();
   }
 
+  // 画面をクリアする
   public clearText(): void {
     this.state.rawDatas.clear();
     this.state.column_counter = 0;
@@ -209,10 +236,12 @@ class CanvasViewer {
     this.updateLayers();
   }
 
+  // データオブジェクトを取得
   public getTexts(): ExtendArray {
     return this.state.rawDatas;
   }
 
+  // アスキーモード時に表示幅のパラメータが更新された場合に呼び出す関数
   public updtaeASCIIMaxWidth() {
     this.state.enterPoint.clear();
     let counter = 0;
@@ -232,6 +261,7 @@ class CanvasViewer {
     }
   }
 
+  // パラメータを更新する関数
   public setParam(data: UserConfig) {
     this.params.userConfig = data;
     // レイヤーを再描画
@@ -243,10 +273,12 @@ class CanvasViewer {
     this.updateLayers();
   }
 
+  // データをスライスする関数のラッパー
   public getTextsSlice(s: number, e: number): number[] {
     return this.state.rawDatas.slice(s, e);
   }
 
+  // データの総数を取得する関数のラッパー
   public getTextsSize(): number {
     return this.state.rawDatas.size();
   }
@@ -261,6 +293,7 @@ class CanvasViewer {
     this.updateLayers();
   }
 
+  // 各レイヤーを更新する関数
   private updateLayers() {
     this.textView.updateLayer();
     this.selectView.updateLayer();
