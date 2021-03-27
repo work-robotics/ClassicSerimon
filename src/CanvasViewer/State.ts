@@ -68,6 +68,9 @@ export class State {
   public enableAutoScroll: boolean;
   public selectDirection: string;
 
+  public column_counter: number;
+  public column_width_sum: number;
+
   public selectedIndexs: {
     top: { row: number; start: number; end: number };
     bottom: { row: number; start: number; end: number };
@@ -95,6 +98,8 @@ export class State {
     this.selectDirection = "No";
     this.enterPoint = new ExtendArray();
     this.enterPoint.append(0);
+    this.column_counter = 0;
+    this.column_width_sum = 0;
   }
 }
 

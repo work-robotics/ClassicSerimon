@@ -13,9 +13,6 @@ class CanvasViewer {
   private scrollView: ScrollView;
   private selectView: SelectView;
 
-  private column_counter: number;
-  private column_width_sum: number;
-
   constructor(id: string, option: UserConfig) {
     // 関数をバインド
     this.mouseMoveEvent = this.mouseMoveEvent.bind(this);
@@ -43,8 +40,6 @@ class CanvasViewer {
       this.mouseLeaveHandler
     );
     this.selectView = new SelectView(this.mainStage, this.params, this.state);
-    this.column_counter = 0;
-    this.column_width_sum = 0;
 
     // 事前に文字幅のテーブルを作成
     for (let i = 0; i < 256; i++) {
@@ -194,13 +189,13 @@ class CanvasViewer {
   public addText(data: number[]): void {
     for (let i in data) {
       this.state.rawDatas.append(data[i]);
-      this.column_width_sum += this.params.asciiFontWidthTable[data[i]];
-      if (data[i] == 10 || this.column_width_sum > this.params.userConfig.asciiMaxWidth) {
+      this.state.column_width_sum += this.params.asciiFontWidthTable[data[i]];
+      if (data[i] == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
         this.state.enterPoint.append(this.state.rawDatas.size());
-        this.column_counter = 0;
-        this.column_width_sum = 0;
+        this.state.column_counter = 0;
+        this.state.column_width_sum = 0;
       } else {
-        this.column_counter++;
+        this.state.column_counter++;
       }
     }
     // 各レイヤーに反映
@@ -209,7 +204,7 @@ class CanvasViewer {
 
   public clearText(): void {
     this.state.rawDatas.clear();
-    this.column_counter = 0;
+    this.state.column_counter = 0;
     this.selectView.resetSelectIndex();
     // 各レイヤーに反映
     this.updateLayers();
@@ -222,17 +217,17 @@ class CanvasViewer {
   public updtaeASCIIMaxWidth() {
     this.state.enterPoint.clear();
     let counter = 0;
-    this.column_counter;
-    this.column_width_sum = 0;
+    this.state.column_counter;
+    this.state.column_width_sum = 0;
     this.state.enterPoint.append(0);
     for (var i = 0; i < this.state.rawDatas.size(); i++) {
-      this.column_width_sum += this.params.asciiFontWidthTable[this.state.rawDatas.at(i)];
-      if (this.state.rawDatas.at(i) == 10 || this.column_width_sum > this.params.userConfig.asciiMaxWidth) {
+      this.state.column_width_sum += this.params.asciiFontWidthTable[this.state.rawDatas.at(i)];
+      if (this.state.rawDatas.at(i) == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
         this.state.enterPoint.append(counter + 1);
-        this.column_counter = 0;
-        this.column_width_sum = 0;
+        this.state.column_counter = 0;
+        this.state.column_width_sum = 0;
       } else {
-        this.column_counter++;
+        this.state.column_counter++;
       }
       counter++;
     }
