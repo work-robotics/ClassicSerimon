@@ -21,6 +21,8 @@ class TextView {
   private textTopBackground: Konva.Rect | undefined;
   private textTopNumContent: Konva.Text;
 
+  private textBorder: Konva.Rect | undefined;
+
   private updateTextLayerTicking: boolean;
 
   constructor(stage: Konva.Stage, params: Params, state: State) {
@@ -113,6 +115,15 @@ class TextView {
       height: this.params.topNumberHeight,
     });
 
+    // ボーダの背景
+    this.textBorder = new Konva.Rect({
+      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight + this.params.userConfig.asciiMaxWidth + 10,
+      y: this.params.paddingCanvasTop,
+      fill: "#f2f2f2",
+      width: 2,
+      height: 0,
+    });
+
     // テキストの共通設定
     this.textConfig = {
       fontSize: this.params.fontSize,
@@ -159,6 +170,7 @@ class TextView {
     this.textLayer.add(this.textTopNumContent);
     this.textLayer.add(this.textLineBackground);
     this.textLayer.add(this.textLineNumContent);
+    this.textLayer.add(this.textBorder);
     this.textLayer.add(this.textDataContent);
     this.mainStage.add(this.textLayer);
   }
@@ -177,13 +189,19 @@ class TextView {
   public updateContents() {
     // 行番号の背景の再設定
     this.textLineBackground.height(this.mainStage.height());
+    this.textBorder.height(this.mainStage.height() - 40);
     this.textTopBackground.width(this.mainStage.width() - 20);
     this.textTopNumContent.width(this.mainStage.width() - 20);
     // 画面の高さなどから最大行数を計算
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
     // データ数からインデックスの位置を再計算
-    const rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
+    let rawDatasSize = 0;
+    if (this.params.userConfig.asciiMode) {
+      rawDatasSize = this.state.enterPoint.size();
+    } else {
+      rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
+    }
     if (rawDatasSize < this.state.rowNumber) {
       this.state.rowTopIndex = 0;
       this.state.rowBottomIndex = rawDatasSize;
@@ -193,19 +211,57 @@ class TextView {
 
     let newTextLineNumContent = "";
     this.state.viewTextDatas = [];
-    for (var i = 0; i < this.state.rowNumber; i++) {
-      this.state.viewTextDatas.push("");
-      for (const strs of this.binaryFormatStr(
-        this.state.rawDatas.slice(
-          (this.state.rowTopIndex + i) * this.params.maxLineNum,
-          (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
-        )
-      )) {
-        for (const s of strs) {
-          this.state.viewTextDatas[i] += s;
+    let counter = 0;
+    if (this.params.userConfig.asciiMode) {
+      let render_datas = [];
+      // データを一時的に取り出す
+      while (1) {
+        if (counter == this.state.rowNumber) {
+          break;
         }
+        // 範囲データを取り出す
+        const area = this.state.enterPoint.slice(
+          counter + this.state.rowTopIndex,
+          counter + this.state.rowTopIndex + 2
+        );
+        // データが有効な場合は処理を継続
+        if (area.length == 2) {
+          const data = this.asciiFormatStr(this.state.rawDatas.slice(area[0], area[1]));
+          render_datas.push(data);
+        } else if (area.length == 1) {
+          const data = this.asciiFormatStr(this.state.rawDatas.slice(area[0], this.state.rawDatas.size()));
+          render_datas.push(data);
+          break;
+        } else {
+          break;
+        }
+        counter++;
       }
-      newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
+      for (let i = 0; i < render_datas.length; i++) {
+        this.state.viewTextDatas.push("");
+        newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
+        for (const strs of render_datas[i]) {
+          for (const s of strs) {
+            if (s != "\n") this.state.viewTextDatas[i] += s;
+          }
+        }
+        this.state.viewTextDatas.push("");
+      }
+    } else {
+      for (var i = 0; i < this.state.rowNumber; i++) {
+        this.state.viewTextDatas.push("");
+        for (const strs of this.binaryFormatStr(
+          this.state.rawDatas.slice(
+            (this.state.rowTopIndex + i) * this.params.maxLineNum,
+            (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
+          )
+        )) {
+          for (const s of strs) {
+            this.state.viewTextDatas[i] += s;
+          }
+        }
+        newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
+      }
     }
     this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
@@ -218,6 +274,10 @@ class TextView {
       if (addSpace && parseInt(i) != data.length - 1) content += " ";
     }
     return content;
+  }
+
+  public asciiFormatStr(data: number[], addSpace: boolean = true): string {
+    return String.fromCharCode(...data);
   }
 }
 

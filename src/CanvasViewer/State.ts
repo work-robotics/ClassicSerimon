@@ -59,7 +59,7 @@ export class State {
   public scrollHeight: number;
   public scrollTop: number;
   public rowNumber: number;
-
+  public enterPoint: ExtendArray;
   public mouseOriginPosition: { x: number; y: number };
   public mousePosition: { x: number; y: number };
   public mouseOverIndex: { x: number; y: number };
@@ -93,6 +93,8 @@ export class State {
       origin: { row: -1, column: -1 },
     };
     this.selectDirection = "No";
+    this.enterPoint = new ExtendArray();
+    this.enterPoint.append(0);
   }
 }
 

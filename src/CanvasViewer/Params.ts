@@ -3,6 +3,8 @@ export type UserConfig = {
   rowHeight: number;
   fontFamily: string;
   maxLineNum: number;
+  asciiMode: boolean;
+  asciiMaxWidth: number;
 };
 
 export class Params {
@@ -10,12 +12,14 @@ export class Params {
   private _lineNumbersWidth: number;
   private _paddingLineNumbersRight: number;
   private _topNumberHeight: number;
+  public asciiFontWidthTable: number[];
 
   constructor(userConfig: UserConfig) {
     this._userConfig = userConfig;
     this._lineNumbersWidth = 90;
     this._paddingLineNumbersRight = 10;
     this._topNumberHeight = 30;
+    this.asciiFontWidthTable = [];
   }
 
   get userConfig(): UserConfig {
