@@ -131,8 +131,8 @@ class CanvasViewer {
       output += this.textView
         .binaryFormatStr(
           this.state.rawDatas.slice(
-            (this.state.rowTopIndex + this.state.selectedIndexs.top.row) * this.params.maxLineNum,
-            (this.state.rowTopIndex + this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
+            this.state.selectedIndexs.top.row * this.params.maxLineNum,
+            (this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
           )
         )
         .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
@@ -142,8 +142,8 @@ class CanvasViewer {
       for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
         output += this.textView.binaryFormatStr(
           this.state.rawDatas.slice(
-            (this.state.rowTopIndex + i) * this.params.maxLineNum,
-            (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
+            (this.state.selectedIndexs.top.row + i) * this.params.maxLineNum,
+            (this.state.selectedIndexs.top.row + i + 1) * this.params.maxLineNum
           )
         );
         output += "\n";
@@ -154,8 +154,8 @@ class CanvasViewer {
         output += this.textView
           .binaryFormatStr(
             this.state.rawDatas.slice(
-              (this.state.rowTopIndex + this.state.selectedIndexs.bottom.row) * this.params.maxLineNum,
-              (this.state.rowTopIndex + this.state.selectedIndexs.bottom.row + 1) * this.params.maxLineNum
+              this.state.selectedIndexs.bottom.row * this.params.maxLineNum,
+              (this.state.selectedIndexs.bottom.row + 1) * this.params.maxLineNum
             )
           )
           .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
