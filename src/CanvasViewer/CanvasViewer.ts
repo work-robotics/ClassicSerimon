@@ -230,6 +230,9 @@ class CanvasViewer {
   // 画面をクリアする
   public clearText(): void {
     this.state.rawDatas.clear();
+    this.state.enterPoint.clear();
+    this.state.enterPoint.append(0);
+    this.state.column_width_sum = 0;
     this.state.column_counter = 0;
     this.selectView.resetSelectIndex();
     // 各レイヤーに反映
