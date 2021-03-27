@@ -28,6 +28,7 @@ export class Common {
     this.tempText = new Konva.Text({ ...textConfig });
 
     // 事前にASCIIの文字幅のテーブルを作成
+    this.params.asciiFontWidthTable = [];
     for (let i = 0; i < 256; i++) {
       this.params.asciiFontWidthTable.push(this.getTextWidth(String.fromCharCode(i)));
     }

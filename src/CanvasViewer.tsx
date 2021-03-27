@@ -23,6 +23,8 @@ const ReactCanvasViewer = forwardRef<CanvasViewerRef>((props, ref) => {
     const readConfig: UserConfig = ConfigStore.getData();
     ConfigStore.store.onDidAnyChange(onDidChangeStore);
     ConfigStore.store.onDidChange("asciiMaxWidth", onDidChangeASCIIMaxWidth);
+    ConfigStore.store.onDidChange("fontSize", onDidChangeASCIIMaxWidth);
+    ConfigStore.store.onDidChange("fontFamily", onDidChangeASCIIMaxWidth);
 
     CanvasViewerRef.current = new CanvasViewer(elementRef.current.id, readConfig);
     function resizeEvent() {
@@ -43,7 +45,7 @@ const ReactCanvasViewer = forwardRef<CanvasViewerRef>((props, ref) => {
     };
   });
 
-  function onDidChangeASCIIMaxWidth(data: number) {
+  function onDidChangeASCIIMaxWidth(data: any) {
     CanvasViewerRef.current.updtaeASCIIMaxWidth();
   }
 
