@@ -5,6 +5,7 @@ import Common from "./Common";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
+import easta from "easta";
 
 class CanvasViewer {
   // 描画用のステージ
@@ -17,6 +18,11 @@ class CanvasViewer {
   private textView: TextView;
   private scrollView: ScrollView;
   private selectView: SelectView;
+
+  public buffer1byte = Buffer.from([0]);
+  public buffer2byte = Buffer.from([0, 0]);
+  public buffer3byte = Buffer.from([0, 0, 0]);
+  public buffer4byte = Buffer.from([0, 0, 0, 0]);
 
   constructor(id: string, option: UserConfig) {
     // 関数をバインド
@@ -126,42 +132,82 @@ class CanvasViewer {
   // コピー時のイベント関数
   private copyEvent(event: ClipboardEvent): void {
     if (this.state.selectedIndexs.top.row >= 0) {
-      let output = "";
-      // 上段の指定範囲のデータを取り出す
-      output += this.textView
-        .binaryFormatStr(
-          this.state.rawDatas.slice(
-            this.state.selectedIndexs.top.row * this.params.maxLineNum,
-            (this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
-          )
-        )
-        .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
-      output += "\n";
-
-      // 中段の指定範囲のデータを取り出す
-      for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
-        output += this.textView.binaryFormatStr(
-          this.state.rawDatas.slice(
-            (this.state.selectedIndexs.top.row + i) * this.params.maxLineNum,
-            (this.state.selectedIndexs.top.row + i + 1) * this.params.maxLineNum
-          )
+      if (this.params.userConfig.asciiMode) {
+        // アスキーモード時の処理
+        const areaTop = this.state.enterPoint.slice(
+          this.state.selectedIndexs.top.row,
+          this.state.selectedIndexs.top.row + 2
         );
+        let output = "";
+        // 上段の指定範囲のデータを取り出す
+        output += this.textView
+          .asciiFormatStr(this.state.rawDatas.slice(areaTop[0], areaTop[1]))
+          .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
         output += "\n";
-      }
 
-      // 下段の指定範囲のデータを取り出す
-      if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
+        // 中段の指定範囲のデータを取り出す
+        for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
+          const areaMiddle = this.state.enterPoint.slice(
+            this.state.selectedIndexs.top.row + i,
+            this.state.selectedIndexs.top.row + i + 2
+          );
+          output += this.textView.asciiFormatStr(this.state.rawDatas.slice(areaMiddle[0], areaMiddle[1]));
+          output += "\n";
+        }
+
+        // 下段の指定範囲のデータを取り出す
+        if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
+          const areaBottom = this.state.enterPoint.slice(
+            this.state.selectedIndexs.bottom.row,
+            this.state.selectedIndexs.bottom.row + 2
+          );
+          if (areaBottom.length == 1) {
+            areaBottom.push(this.state.rawDatas.size());
+          }
+          output += this.textView
+            .asciiFormatStr(this.state.rawDatas.slice(areaBottom[0], areaBottom[1]))
+            .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
+        }
+        event.clipboardData.setData("text/plain", output);
+        event.preventDefault();
+      } else {
+        let output = "";
+        // 上段の指定範囲のデータを取り出す
         output += this.textView
           .binaryFormatStr(
             this.state.rawDatas.slice(
-              this.state.selectedIndexs.bottom.row * this.params.maxLineNum,
-              (this.state.selectedIndexs.bottom.row + 1) * this.params.maxLineNum
+              this.state.selectedIndexs.top.row * this.params.maxLineNum,
+              (this.state.selectedIndexs.top.row + 1) * this.params.maxLineNum
             )
           )
-          .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
+          .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
+        output += "\n";
+
+        // 中段の指定範囲のデータを取り出す
+        for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
+          output += this.textView.binaryFormatStr(
+            this.state.rawDatas.slice(
+              (this.state.selectedIndexs.top.row + i) * this.params.maxLineNum,
+              (this.state.selectedIndexs.top.row + i + 1) * this.params.maxLineNum
+            )
+          );
+          output += "\n";
+        }
+
+        // 下段の指定範囲のデータを取り出す
+        if (this.state.selectedIndexs.bottom.row != this.state.selectedIndexs.top.row) {
+          output += this.textView
+            .binaryFormatStr(
+              this.state.rawDatas.slice(
+                this.state.selectedIndexs.bottom.row * this.params.maxLineNum,
+                (this.state.selectedIndexs.bottom.row + 1) * this.params.maxLineNum
+              )
+            )
+            .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
+        }
+        event.clipboardData.setData("text/plain", output);
+        event.preventDefault();
       }
-      event.clipboardData.setData("text/plain", output);
-      event.preventDefault();
     }
   }
 
@@ -212,9 +258,56 @@ class CanvasViewer {
 
   // テキストを追加する関数
   public addText(data: number[]): void {
-    for (let i in data) {
-      this.state.rawDatas.append(data[i]);
-      this.state.column_width_sum += this.params.asciiFontWidthTable[data[i]];
+    let dataType = 0;
+    for (let i = 0; i < data.length; i++) {
+      // 4Byte文字
+      if (data[i] >= 0xf0 && data[i] <= 0xf4) {
+        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
+          if (data[i + 2] >= 0x80 && data[i + 2] <= 0xbf) {
+            if (data[i + 3] >= 0x80 && data[i + 3] <= 0xbf) {
+              dataType = 4;
+              this.buffer4byte[0] = data[i];
+              this.buffer4byte[1] = data[i + 1];
+              this.buffer4byte[2] = data[i + 2];
+              this.buffer4byte[3] = data[i + 3];
+              this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer4byte.toString("utf-8"))];
+            }
+          }
+        }
+      }
+      // 3Byte文字
+      if (data[i] >= 0xe0 && data[i] <= 0xef) {
+        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
+          if (data[i + 2] >= 0x80 && data[i + 2] <= 0xbf) {
+            dataType = 3;
+            this.buffer3byte[0] = data[i];
+            this.buffer3byte[1] = data[i + 1];
+            this.buffer3byte[2] = data[i + 2];
+            this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer3byte.toString("utf-8"))];
+          }
+        }
+      }
+      // 2Byte文字
+      if (data[i] >= 0xc2 && data[i] <= 0xdf) {
+        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
+          dataType = 2;
+          this.buffer2byte[0] = data[i];
+          this.buffer2byte[1] = data[i + 1];
+          this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer2byte.toString("utf-8"))];
+        }
+      }
+      // 1Byte文字
+      if (dataType == 0 || (data[i] >= 0x00 && data[i] <= 0x7f)) {
+        dataType = 1;
+        this.buffer1byte[0] = data[i];
+        this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer1byte.toString("utf-8"))];
+      }
+
+      // データを文字コードに沿って取り出す
+      for (let k = 0; k < dataType; k++) {
+        this.state.rawDatas.append(data[i + k]);
+      }
+
       if (data[i] == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
         this.state.enterPoint.append(this.state.rawDatas.size());
         this.state.column_counter = 0;
@@ -222,6 +315,8 @@ class CanvasViewer {
       } else {
         this.state.column_counter++;
       }
+      i += dataType - 1;
+      dataType = 0;
     }
     // 各レイヤーに反映
     this.updateLayers();
@@ -246,21 +341,68 @@ class CanvasViewer {
 
   // アスキーモード時に表示幅のパラメータが更新された場合に呼び出す関数
   public updtaeASCIIMaxWidth() {
+    let buffer1byte = Buffer.from([0]);
+    let buffer2byte = Buffer.from([0, 0]);
+    let buffer3byte = Buffer.from([0, 0, 0]);
+    let buffer4byte = Buffer.from([0, 0, 0, 0]);
     this.state.enterPoint.clear();
-    let counter = 0;
     this.state.column_counter;
     this.state.column_width_sum = 0;
     this.state.enterPoint.append(0);
-    for (var i = 0; i < this.state.rawDatas.size(); i++) {
-      this.state.column_width_sum += this.params.asciiFontWidthTable[this.state.rawDatas.at(i)];
+    let dataType = 0;
+    for (let i = 0; i < this.state.rawDatas.size(); i++) {
+      // 4Byte文字
+      if (this.state.rawDatas.at(i) >= 0xf0 && this.state.rawDatas.at(i) <= 0xf4) {
+        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
+          if (this.state.rawDatas.at(i + 2) >= 0x80 && this.state.rawDatas.at(i + 2) <= 0xbf) {
+            if (this.state.rawDatas.at(i + 3) >= 0x80 && this.state.rawDatas.at(i + 3) <= 0xbf) {
+              dataType = 4;
+              buffer4byte[0] = this.state.rawDatas.at(i);
+              buffer4byte[1] = this.state.rawDatas.at(i + 1);
+              buffer4byte[2] = this.state.rawDatas.at(i + 2);
+              buffer4byte[3] = this.state.rawDatas.at(i + 3);
+              this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer4byte.toString("utf-8"))];
+            }
+          }
+        }
+      }
+      // 3Byte文字
+      if (this.state.rawDatas.at(i) >= 0xe0 && this.state.rawDatas.at(i) <= 0xef) {
+        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
+          if (this.state.rawDatas.at(i + 2) >= 0x80 && this.state.rawDatas.at(i + 2) <= 0xbf) {
+            dataType = 3;
+            buffer3byte[0] = this.state.rawDatas.at(i);
+            buffer3byte[1] = this.state.rawDatas.at(i + 1);
+            buffer3byte[2] = this.state.rawDatas.at(i + 2);
+            this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer3byte.toString("utf-8"))];
+          }
+        }
+      }
+      // 2Byte文字
+      if (this.state.rawDatas.at(i) >= 0xc2 && this.state.rawDatas.at(i) <= 0xdf) {
+        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
+          dataType = 2;
+          buffer2byte[0] = this.state.rawDatas.at(i);
+          buffer2byte[1] = this.state.rawDatas.at(i + 1);
+          this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer2byte.toString("utf-8"))];
+        }
+      }
+      // 1Byte文字
+      if (dataType == 0 || (this.state.rawDatas.at(i) >= 0x00 && this.state.rawDatas.at(i) <= 0x7f)) {
+        dataType = 1;
+        buffer1byte[0] = this.state.rawDatas.at(i);
+        this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer1byte.toString("utf-8"))];
+      }
+
       if (this.state.rawDatas.at(i) == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
-        this.state.enterPoint.append(counter + 1);
+        this.state.enterPoint.append(i + dataType);
         this.state.column_counter = 0;
         this.state.column_width_sum = 0;
       } else {
         this.state.column_counter++;
       }
-      counter++;
+      i += dataType - 1;
+      dataType = 0;
     }
   }
 
@@ -272,6 +414,7 @@ class CanvasViewer {
     this.common.init();
     this.textView.initLayer();
     this.selectView.initLayer();
+    this.selectView.resetSelectIndex();
     this.scrollView.initLayer();
     this.updateLayers();
   }

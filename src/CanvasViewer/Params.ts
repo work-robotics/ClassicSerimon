@@ -12,14 +12,28 @@ export class Params {
   private _lineNumbersWidth: number;
   private _paddingLineNumbersRight: number;
   private _topNumberHeight: number;
-  public asciiFontWidthTable: number[];
+  public preMeasureFontSize: {
+    F: number;
+    H: number;
+    W: number;
+    Na: number;
+    A: number;
+    N: number;
+  };
 
   constructor(userConfig: UserConfig) {
     this._userConfig = userConfig;
     this._lineNumbersWidth = 90;
     this._paddingLineNumbersRight = 10;
     this._topNumberHeight = 30;
-    this.asciiFontWidthTable = [];
+    this.preMeasureFontSize = {
+      F: 0,
+      H: 0,
+      W: 0,
+      Na: 0,
+      A: 0,
+      N: 0,
+    };
   }
 
   get userConfig(): UserConfig {

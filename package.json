@@ -48,6 +48,7 @@
     "@fortawesome/react-fontawesome": "^0.1.12",
     "bootstrap": "^4.5.3",
     "css-loader": "^5.0.0",
+    "easta": "^5.0.0",
     "electron-connect": "^0.6.3",
     "electron-context-menu": "^2.3.0",
     "electron-store": "^7.0.2",

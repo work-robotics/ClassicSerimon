@@ -114,7 +114,7 @@ class TextView {
 
     // ボーダの背景
     this.textBorder = new Konva.Rect({
-      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight + this.params.userConfig.asciiMaxWidth + 10,
+      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight + this.params.userConfig.asciiMaxWidth + 20,
       y: this.params.paddingCanvasTop,
       fill: "#f2f2f2",
       width: 2,
@@ -277,7 +277,7 @@ class TextView {
   }
 
   public asciiFormatStr(data: number[], addSpace: boolean = true): string {
-    return String.fromCharCode(...data);
+    return new TextDecoder("utf8").decode(Uint8Array.of(...data));
   }
 }
 

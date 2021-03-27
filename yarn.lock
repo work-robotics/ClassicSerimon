@@ -2263,6 +2263,11 @@ each-props@^1.3.0:
     is-plain-object "^2.0.1"
     object.defaults "^1.1.0"
 
+easta@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/easta/-/easta-5.0.0.tgz#12b4bb8f5725adb18c51507d1b26ea501192aaa6"
+  integrity sha512-Ebmbd/kMo4Ke0tCLiqg8OnuHm1r7fZaxpi6ONWZbryfhU/+FEq64o5ct6iajw9gQpojPOUixX2fK62XZ0Fa5Cw==
+
 editions@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/editions/-/editions-6.1.0.tgz#ba6c6cf9f4bb571d9e53ea34e771a602e5a66549"

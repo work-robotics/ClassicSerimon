@@ -27,11 +27,12 @@ export class Common {
     // テキスト検査用のテキスト
     this.tempText = new Konva.Text({ ...textConfig });
 
-    // 事前にASCIIの文字幅のテーブルを作成
-    this.params.asciiFontWidthTable = [];
-    for (let i = 0; i < 256; i++) {
-      this.params.asciiFontWidthTable.push(this.getTextWidth(String.fromCharCode(i)));
-    }
+    this.params.preMeasureFontSize["F"] = this.getTextWidth("あ");
+    this.params.preMeasureFontSize["W"] = this.getTextWidth("あ");
+    this.params.preMeasureFontSize["A"] = this.getTextWidth("A");
+    this.params.preMeasureFontSize["H"] = this.getTextWidth("A");
+    this.params.preMeasureFontSize["Na"] = this.getTextWidth("A");
+    this.params.preMeasureFontSize["N"] = this.getTextWidth("A");
   }
 
   public getTextWidth(data: string): number {
