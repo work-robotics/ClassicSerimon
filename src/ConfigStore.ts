@@ -7,7 +7,7 @@ const defaultValue: UserConfig = {
   fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
   maxLineNum: 16,
   asciiMode: false,
-  asciiMaxWidth: 700,
+  asciiMaxWidth: 650,
 };
 
 export class ConfigStore {
