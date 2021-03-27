@@ -17,6 +17,11 @@ export class ExtendArray {
     }
   }
 
+  public at(n: number) {
+    const sr = Math.min(this._areaCounter, Math.floor(n / this._maxSize));
+    return this._datas[sr][n - this._maxSize * sr];
+  }
+
   public slice(s: number, e: number) {
     const sr = Math.min(this._areaCounter, Math.floor(s / this._maxSize));
     const er = Math.min(this._areaCounter, Math.floor(e / this._maxSize));
