@@ -5,6 +5,7 @@ export type UserConfig = {
   maxLineNum: number;
   asciiMode: boolean;
   asciiMaxWidth: number;
+  baudrate: number;
 };
 
 export class Params {

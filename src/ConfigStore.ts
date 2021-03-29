@@ -8,6 +8,7 @@ const defaultValue: UserConfig = {
   maxLineNum: 16,
   asciiMode: false,
   asciiMaxWidth: 650,
+  baudrate: 9600,
 };
 
 export class ConfigStore {
