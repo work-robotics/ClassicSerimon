@@ -104,6 +104,14 @@ const Monitor: React.FC = () => {
       .then((result) => {
         if (!result.canceled) {
           const fd = fs.openSync(result.filePath, "w");
+          // メタ情報の追加
+          fs.writeSync(fd, "VERSION:0.0.1\n");
+          fs.writeSync(fd, "PROTOCOL:None\n");
+          fs.writeSync(fd, "USER:WorkRobotics\n");
+          fs.writeSync(fd, "TIMESTAMP:" + Date.now().toString() + "\n");
+          fs.writeSync(fd, "LOCATION:Home\n");
+          fs.writeSync(fd, "DESCRIPTION:試験用のテストデータです。\n");
+          fs.writeSync(fd, "---\n");
           const textSize = canvasViewerRef.current.getCanvasViewer().getTextsSize();
           const blockSize = 1024;
           for (var i = 0; i < Math.ceil(textSize / blockSize); i++) {
