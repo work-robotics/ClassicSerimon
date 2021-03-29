@@ -6,7 +6,7 @@ const BaudrateSelector: React.FC = () => {
   console.log("[Run] BaudrateSelector");
 
   const { state: baudrateStatus, setState: setBaudrateStatus } = useContext(BaudrateSelectorContext);
-  const baudrateList = useRef<number[]>([9600, 19200, 38400, 57600, 115200, 230400]);
+  const baudrateList = useRef<number[]>([9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1000000, 2000000]);
 
   function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setBaudrateStatus({ selectedBaudrate: parseInt(event.target.value) });
