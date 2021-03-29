@@ -11,6 +11,7 @@ import { faPlug, faSave, faCog } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
 import ConfigStore from "./ConfigStore";
+import ModalWindow from "./ModalWindow";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -62,11 +63,13 @@ const Monitor: React.FC = () => {
   const { state: deviceStatus, setState: setDeviceStatus } = useContext(DeviceStatusContext);
   const canvasViewerRef = useRef<CanvasViewerRef>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(true);
+
   const counter = useRef<number>(0);
 
   function settingBottonHandler(e) {
     e.preventDefault();
-    ConfigStore.store.openInEditor();
+    setOpenSettingWindow(true);
   }
 
   function clearBottonHandler(e) {
@@ -173,6 +176,7 @@ const Monitor: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <ModalWindow show={openSettingWindow} setShow={setOpenSettingWindow} />
     </>
   );
 };
