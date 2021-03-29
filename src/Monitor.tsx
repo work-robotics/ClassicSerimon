@@ -7,9 +7,10 @@ import BaudrateSelector from "./BaudrateSelector";
 import DeviceSelector from "./DeviceSelector";
 import ReactCanvasViewer, { CanvasViewerRef } from "./CanvasViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlug, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faPlug, faSave, faCog } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
+import ConfigStore from "./ConfigStore";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -62,6 +63,11 @@ const Monitor: React.FC = () => {
   const canvasViewerRef = useRef<CanvasViewerRef>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const counter = useRef<number>(0);
+
+  function settingBottonHandler(e) {
+    e.preventDefault();
+    ConfigStore.store.openInEditor();
+  }
 
   function clearBottonHandler(e) {
     e.preventDefault();
@@ -136,6 +142,10 @@ const Monitor: React.FC = () => {
             )}
           </Col>
           <Col className={RightMenu}>
+            <Button variant="dark" onClick={settingBottonHandler}>
+              <FontAwesomeIcon icon={faCog} />
+              {" Open Setting"}
+            </Button>{" "}
             <Button variant="secondary" onClick={saveBottonHandler}>
               <FontAwesomeIcon icon={faSave} /> {" Save"}
             </Button>{" "}
