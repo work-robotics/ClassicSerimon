@@ -2,7 +2,7 @@ import Store, { Schema } from "electron-store";
 import { UserConfig } from "./CanvasViewer/Params";
 
 const defaultValue: UserConfig = {
-  fontSize: 16,
+  fontSize: 14,
   rowHeight: 20,
   fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
   maxLineNum: 16,
