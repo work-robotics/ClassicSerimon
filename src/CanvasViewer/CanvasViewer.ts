@@ -140,19 +140,31 @@ class CanvasViewer {
         );
         let output = "";
         // 上段の指定範囲のデータを取り出す
+        const rawData = this.state.rawDatas.slice(areaTop[0], areaTop[1]);
+        this.common.formCopyData(rawData);
         output += this.textView
-          .asciiFormatStr(this.state.rawDatas.slice(areaTop[0], areaTop[1]))
+          .asciiFormatStr(rawData)
           .slice(this.state.selectedIndexs.top.start, this.state.selectedIndexs.top.end);
-        output += "\n";
+
+        if (
+          output[output.length - 1] != "\n" &&
+          this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row != 0
+        ) {
+          output += "\n";
+        }
 
         // 中段の指定範囲のデータを取り出す
-        for (var i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
+        for (let i = 1; i < this.state.selectedIndexs.bottom.row - this.state.selectedIndexs.top.row; i++) {
           const areaMiddle = this.state.enterPoint.slice(
             this.state.selectedIndexs.top.row + i,
             this.state.selectedIndexs.top.row + i + 2
           );
-          output += this.textView.asciiFormatStr(this.state.rawDatas.slice(areaMiddle[0], areaMiddle[1]));
-          output += "\n";
+          const rawData = this.state.rawDatas.slice(areaMiddle[0], areaMiddle[1]);
+          this.common.formCopyData(rawData);
+          output += this.textView.asciiFormatStr(rawData);
+          if (output[output.length - 1] != "\n") {
+            output += "\n";
+          }
         }
 
         // 下段の指定範囲のデータを取り出す
@@ -164,8 +176,10 @@ class CanvasViewer {
           if (areaBottom.length == 1) {
             areaBottom.push(this.state.rawDatas.size());
           }
+          const rawData = this.state.rawDatas.slice(areaBottom[0], areaBottom[1]);
+          this.common.formCopyData(rawData);
           output += this.textView
-            .asciiFormatStr(this.state.rawDatas.slice(areaBottom[0], areaBottom[1]))
+            .asciiFormatStr(rawData)
             .slice(this.state.selectedIndexs.bottom.start, this.state.selectedIndexs.bottom.end);
         }
         event.clipboardData.setData("text/plain", output);
@@ -256,75 +270,224 @@ class CanvasViewer {
     this.updateLayers();
   }
 
+  //-1: 初期状態, 1~4: 対象のバイトを指す
+  private addTextState: {
+    mode: number;
+    counter: number;
+    isReject: boolean;
+    buffer: number[];
+  } = { mode: -1, counter: 0, isReject: false, buffer: [] };
+
+  private byteConfirm(data: number) {
+    if (this.addTextState.mode == -1) {
+      this.addTextState.buffer = [];
+      this.addTextState.isReject = false;
+      if (data >= 0xf0 && data <= 0xf4) {
+        // 4Byteのヘッダか確認
+        this.addTextState.mode = 4;
+      } else if (data >= 0xe0 && data <= 0xef) {
+        // 3Byteのヘッダか確認
+        this.addTextState.mode = 3;
+      } else if (data >= 0xc2 && data <= 0xdf) {
+        // 2Byteのヘッダか確認
+        this.addTextState.mode = 2;
+      } else {
+        // 1Byteのヘッダか確認
+        this.addTextState.mode = 1;
+      }
+      this.addTextState.counter = this.addTextState.mode;
+    }
+  }
+
+  private fourByteDecode(data: number) {
+    if (this.addTextState.counter == 4) {
+      this.buffer4byte[0] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 3 && data >= 0x80 && data <= 0xbf) {
+      this.buffer4byte[1] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 2 && data >= 0x80 && data <= 0xbf) {
+      this.buffer4byte[2] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 1 && data >= 0x80 && data <= 0xbf) {
+      this.buffer4byte[3] = data;
+      this.addTextState.counter--;
+    } else {
+      this.addTextState.isReject = true;
+    }
+    // データが正常に読み込めた場合
+    if (this.addTextState.counter == 0) {
+      this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer4byte.toString("utf-8"))];
+    }
+  }
+
+  private treeByteDecode(data: number) {
+    if (this.addTextState.counter == 3) {
+      this.buffer3byte[0] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 2 && data >= 0x80 && data <= 0xbf) {
+      this.buffer3byte[1] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 1 && data >= 0x80 && data <= 0xbf) {
+      this.buffer3byte[2] = data;
+      this.addTextState.counter--;
+    } else {
+      this.addTextState.isReject = true;
+    }
+    // データが正常に読み込めた場合
+    if (this.addTextState.counter == 0) {
+      this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer3byte.toString("utf-8"))];
+    }
+  }
+
+  private twoByteDecode(data: number) {
+    if (this.addTextState.counter == 2) {
+      this.buffer2byte[0] = data;
+      this.addTextState.counter--;
+    } else if (this.addTextState.counter == 1 && data >= 0x80 && data <= 0xbf) {
+      this.buffer2byte[1] = data;
+      this.addTextState.counter--;
+    } else {
+      this.addTextState.isReject = true;
+    }
+    // データが正常に読み込めた場合
+    if (this.addTextState.counter == 0) {
+      this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer2byte.toString("utf-8"))];
+    }
+  }
+
+  private oneByteDecode(data: number) {
+    if (this.addTextState.counter == 1) {
+      // 表示可能でない文字はスペースに置換する
+      if (data >= 0x00 && data <= 0x09) {
+        this.buffer1byte[0] = 0x20;
+      } else if (data >= 0x0b && data <= 0x1f) {
+        this.buffer1byte[0] = 0x20;
+      } else if (data > 0x7f) {
+        this.buffer1byte[0] = 0x20;
+      } else {
+        this.buffer1byte[0] = data;
+      }
+      this.addTextState.counter--;
+      this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer1byte.toString("utf-8"))];
+    }
+  }
+
+  private otherByteDecode(data: number) {
+    if (data >= 0x00 && data <= 0x09) {
+      this.buffer1byte[0] = 0x20;
+    } else if (data >= 0x0b && data <= 0x1f) {
+      this.buffer1byte[0] = 0x20;
+    } else if (data > 0x7f) {
+      this.buffer1byte[0] = 0x20;
+    } else {
+      this.buffer1byte[0] = data;
+    }
+    this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer1byte.toString("utf-8"))];
+  }
+
+  private updateEnterPoint() {
+    for (let i = 0; i < this.state.rawDatas.size(); i++) {
+      const data = this.state.rawDatas.at(i);
+      // 何バイトの文字か判定
+      this.byteConfirm(data);
+      // データを追加
+      this.addTextState.buffer.push(data);
+
+      // 各バイト文字ごとに処理
+      switch (this.addTextState.mode) {
+        case 4:
+          this.fourByteDecode(data);
+          break;
+        case 3:
+          this.treeByteDecode(data);
+          break;
+        case 2:
+          this.twoByteDecode(data);
+          break;
+        case 1:
+          this.oneByteDecode(data);
+          break;
+      }
+
+      // 無効モード時は1Byteとして扱いながら文字幅計算と改行判定
+      if (this.addTextState.isReject) {
+        // 無効なデータはすべて1Byte文字として扱う
+        for (var k = this.addTextState.mode - this.addTextState.counter; k >= 0; k--) {
+          // 表示可能でない文字はスペースに置換する
+          const targetData = this.addTextState.buffer[k];
+          this.otherByteDecode(targetData);
+          // 改行判定
+          this.checkEnterPoint(targetData, i);
+        }
+        this.addTextState.mode = -1;
+        this.addTextState.isReject = false;
+      } else if (this.addTextState.counter == 0) {
+        // 文字の読み込みが完了後に改行判定
+        this.checkEnterPoint(data[i], i + 1);
+        this.addTextState.mode = -1;
+      }
+    }
+  }
+
   // テキストを追加する関数
   public addText(data: number[]): void {
-    let dataType = 0;
     for (let i = 0; i < data.length; i++) {
-      // 4Byte文字
-      if (data[i] >= 0xf0 && data[i] <= 0xf4) {
-        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
-          if (data[i + 2] >= 0x80 && data[i + 2] <= 0xbf) {
-            if (data[i + 3] >= 0x80 && data[i + 3] <= 0xbf) {
-              dataType = 4;
-              this.buffer4byte[0] = data[i];
-              this.buffer4byte[1] = data[i + 1];
-              this.buffer4byte[2] = data[i + 2];
-              this.buffer4byte[3] = data[i + 3];
-              this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer4byte.toString("utf-8"))];
-            }
-          }
-        }
-      }
-      // 3Byte文字
-      if (data[i] >= 0xe0 && data[i] <= 0xef) {
-        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
-          if (data[i + 2] >= 0x80 && data[i + 2] <= 0xbf) {
-            dataType = 3;
-            this.buffer3byte[0] = data[i];
-            this.buffer3byte[1] = data[i + 1];
-            this.buffer3byte[2] = data[i + 2];
-            this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer3byte.toString("utf-8"))];
-          }
-        }
-      }
-      // 2Byte文字
-      if (data[i] >= 0xc2 && data[i] <= 0xdf) {
-        if (data[i + 1] >= 0x80 && data[i + 1] <= 0xbf) {
-          dataType = 2;
-          this.buffer2byte[0] = data[i];
-          this.buffer2byte[1] = data[i + 1];
-          this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer2byte.toString("utf-8"))];
-        }
-      }
-      // 1Byte文字
-      if (dataType == 0 || (data[i] >= 0x00 && data[i] <= 0x7f)) {
-        dataType = 1;
-        this.buffer1byte[0] = data[i];
-        this.state.column_width_sum += this.params.preMeasureFontSize[easta(this.buffer1byte.toString("utf-8"))];
+      // 何バイトの文字か判定
+      this.byteConfirm(data[i]);
+      // データを追加
+      this.state.rawDatas.append(data[i]);
+      this.addTextState.buffer.push(data[i]);
+
+      // 各バイト文字ごとに処理
+      switch (this.addTextState.mode) {
+        case 4:
+          this.fourByteDecode(data[i]);
+          break;
+        case 3:
+          this.treeByteDecode(data[i]);
+          break;
+        case 2:
+          this.twoByteDecode(data[i]);
+          break;
+        case 1:
+          this.oneByteDecode(data[i]);
+          break;
       }
 
-      // データを文字コードに沿って取り出す
-      for (let k = 0; k < dataType; k++) {
-        this.state.rawDatas.append(data[i + k]);
+      // 無効モード時は1Byteとして扱いながら文字幅計算と改行判定
+      if (this.addTextState.isReject) {
+        for (let k = this.addTextState.mode - this.addTextState.counter; k >= 0; k--) {
+          // 表示可能でない文字はスペースに置換する
+          const targetData = this.addTextState.buffer[k];
+          this.otherByteDecode(targetData);
+          // 改行判定
+          this.checkEnterPoint(targetData, this.state.rawDatas.size());
+        }
+        // 状態変数を初期化
+        this.addTextState.mode = -1;
+        this.addTextState.isReject = false;
+      } else if (this.addTextState.counter == 0) {
+        // 文字の読み込みが完了後に改行判定
+        this.checkEnterPoint(data[i], this.state.rawDatas.size());
+        this.addTextState.mode = -1;
       }
-
-      if (data[i] == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
-        this.state.enterPoint.append(this.state.rawDatas.size());
-        this.state.column_counter = 0;
-        this.state.column_width_sum = 0;
-      } else {
-        this.state.column_counter++;
-      }
-      i += dataType - 1;
-      dataType = 0;
     }
     // 各レイヤーに反映
     this.updateLayers();
   }
 
+  private checkEnterPoint(data: number, setPoint: number) {
+    if (data == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
+      this.state.enterPoint.append(setPoint);
+      this.state.column_width_sum = 0;
+    }
+  }
+
   // 画面をクリアする
   public clearText(): void {
     this.state.rawDatas.clear();
+    this.addTextState = { mode: -1, counter: 0, isReject: false, buffer: [] };
     this.state.enterPoint.clear();
     this.state.enterPoint.append(0);
     this.state.column_width_sum = 0;
@@ -342,69 +505,10 @@ class CanvasViewer {
 
   // アスキーモード時に表示幅のパラメータが更新された場合に呼び出す関数
   public updtaeASCIIMaxWidth() {
-    let buffer1byte = Buffer.from([0]);
-    let buffer2byte = Buffer.from([0, 0]);
-    let buffer3byte = Buffer.from([0, 0, 0]);
-    let buffer4byte = Buffer.from([0, 0, 0, 0]);
     this.state.enterPoint.clear();
-    this.state.column_counter;
-    this.state.column_width_sum = 0;
     this.state.enterPoint.append(0);
-    let dataType = 0;
-    for (let i = 0; i < this.state.rawDatas.size(); i++) {
-      // 4Byte文字
-      if (this.state.rawDatas.at(i) >= 0xf0 && this.state.rawDatas.at(i) <= 0xf4) {
-        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
-          if (this.state.rawDatas.at(i + 2) >= 0x80 && this.state.rawDatas.at(i + 2) <= 0xbf) {
-            if (this.state.rawDatas.at(i + 3) >= 0x80 && this.state.rawDatas.at(i + 3) <= 0xbf) {
-              dataType = 4;
-              buffer4byte[0] = this.state.rawDatas.at(i);
-              buffer4byte[1] = this.state.rawDatas.at(i + 1);
-              buffer4byte[2] = this.state.rawDatas.at(i + 2);
-              buffer4byte[3] = this.state.rawDatas.at(i + 3);
-              this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer4byte.toString("utf-8"))];
-            }
-          }
-        }
-      }
-      // 3Byte文字
-      if (this.state.rawDatas.at(i) >= 0xe0 && this.state.rawDatas.at(i) <= 0xef) {
-        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
-          if (this.state.rawDatas.at(i + 2) >= 0x80 && this.state.rawDatas.at(i + 2) <= 0xbf) {
-            dataType = 3;
-            buffer3byte[0] = this.state.rawDatas.at(i);
-            buffer3byte[1] = this.state.rawDatas.at(i + 1);
-            buffer3byte[2] = this.state.rawDatas.at(i + 2);
-            this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer3byte.toString("utf-8"))];
-          }
-        }
-      }
-      // 2Byte文字
-      if (this.state.rawDatas.at(i) >= 0xc2 && this.state.rawDatas.at(i) <= 0xdf) {
-        if (this.state.rawDatas.at(i + 1) >= 0x80 && this.state.rawDatas.at(i + 1) <= 0xbf) {
-          dataType = 2;
-          buffer2byte[0] = this.state.rawDatas.at(i);
-          buffer2byte[1] = this.state.rawDatas.at(i + 1);
-          this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer2byte.toString("utf-8"))];
-        }
-      }
-      // 1Byte文字
-      if (dataType == 0 || (this.state.rawDatas.at(i) >= 0x00 && this.state.rawDatas.at(i) <= 0x7f)) {
-        dataType = 1;
-        buffer1byte[0] = this.state.rawDatas.at(i);
-        this.state.column_width_sum += this.params.preMeasureFontSize[easta(buffer1byte.toString("utf-8"))];
-      }
-
-      if (this.state.rawDatas.at(i) == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
-        this.state.enterPoint.append(i + dataType);
-        this.state.column_counter = 0;
-        this.state.column_width_sum = 0;
-      } else {
-        this.state.column_counter++;
-      }
-      i += dataType - 1;
-      dataType = 0;
-    }
+    this.state.column_width_sum = 0;
+    this.updateEnterPoint();
   }
 
   // パラメータを更新する関数

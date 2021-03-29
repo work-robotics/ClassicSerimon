@@ -233,11 +233,13 @@ class TextView {
         );
         // データが有効な場合は処理を継続
         if (area.length == 2) {
-          const data = this.asciiFormatStr(this.state.rawDatas.slice(area[0], area[1]));
-          render_datas.push(data);
+          const rawData = this.state.rawDatas.slice(area[0], area[1]);
+          this.common.formCopyData(rawData);
+          render_datas.push(this.asciiFormatStr(rawData));
         } else if (area.length == 1) {
-          const data = this.asciiFormatStr(this.state.rawDatas.slice(area[0], this.state.rawDatas.size()));
-          render_datas.push(data);
+          const rawData = this.state.rawDatas.slice(area[0], this.state.rawDatas.size());
+          this.common.formCopyData(rawData);
+          render_datas.push(this.asciiFormatStr(rawData));
           break;
         } else {
           break;
