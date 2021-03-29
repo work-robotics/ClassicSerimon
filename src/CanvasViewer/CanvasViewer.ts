@@ -518,8 +518,8 @@ class CanvasViewer {
     this.mainStage.destroyChildren();
     this.common.init();
     this.textView.initLayer();
-    this.selectView.initLayer();
     this.selectView.resetSelectIndex();
+    this.selectView.initLayer();
     this.scrollView.initLayer();
     this.updateLayers();
   }
