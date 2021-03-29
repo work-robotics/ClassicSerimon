@@ -93,6 +93,7 @@ class ScrollView {
       // スクロールバーを非表示に設定
       this.scrollBarBackground.visible(false);
       this.scrollBar.visible(false);
+      this.state.isVisibleScroolBar = false;
     } else {
       if (!this.scrollBar.visible()) {
         this.state.enableAutoScroll = true;
@@ -100,6 +101,7 @@ class ScrollView {
       // スクロールバーの表示を有効
       this.scrollBarBackground.visible(true);
       this.scrollBar.visible(true);
+      this.state.isVisibleScroolBar = true;
 
       // scrollHeightを更新
       this.state.scrollHeight = Math.ceil(

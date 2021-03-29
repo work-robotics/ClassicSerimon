@@ -163,6 +163,7 @@ class TextView {
       this.textTopNumContent.visible(false);
     } else {
       this.textTopNumContent.visible(true);
+      this.textBorder.visible(false);
     }
 
     // レイヤに追加
@@ -190,8 +191,14 @@ class TextView {
     // 行番号の背景の再設定
     this.textLineBackground.height(this.mainStage.height());
     this.textBorder.height(this.mainStage.height() - 40);
-    this.textTopBackground.width(this.mainStage.width() - 20);
-    this.textTopNumContent.width(this.mainStage.width() - 20);
+    if (this.state.isVisibleScroolBar) {
+      this.textTopBackground.width(this.mainStage.width() - 20);
+      this.textTopNumContent.width(this.mainStage.width() - 20);
+    } else {
+      this.textTopBackground.width(this.mainStage.width());
+      this.textTopNumContent.width(this.mainStage.width());
+    }
+
     // 画面の高さなどから最大行数を計算
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 

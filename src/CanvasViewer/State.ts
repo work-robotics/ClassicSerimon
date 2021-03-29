@@ -67,6 +67,7 @@ export class State {
   public isMovedMouse: boolean;
   public enableAutoScroll: boolean;
   public selectDirection: string;
+  public isVisibleScroolBar: boolean;
 
   public column_counter: number;
   public column_width_sum: number;
@@ -100,6 +101,7 @@ export class State {
     this.enterPoint.append(0);
     this.column_counter = 0;
     this.column_width_sum = 0;
+    this.isVisibleScroolBar = false;
   }
 }
 
