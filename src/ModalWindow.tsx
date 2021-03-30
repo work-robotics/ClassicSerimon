@@ -3,8 +3,10 @@ import { css } from "emotion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { JSONSchema7 } from "json-schema";
-import Form from "@rjsf/core";
+import Form, { ISubmitEvent } from "@rjsf/core";
 import { Button } from "react-bootstrap";
+import { UserConfig, SysConfig } from "./CanvasViewer/Params";
+import ConfigStore from "./ConfigStore";
 
 const Overlay = css`
   position: fixed;
@@ -22,8 +24,8 @@ const OverlayContent = css`
   z-index: 2;
   margin: 0;
   padding: 0;
-  width: 80%;
-  height: 80%;
+  width: 70%;
+  height: 70%;
   background: #fff;
   padding: 0;
   border-radius: 10px;
@@ -31,6 +33,7 @@ const OverlayContent = css`
   overflow-y: hidden;
   font-size: 16px;
   font-weight: bold;
+  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ContentHeader = css`
@@ -82,22 +85,43 @@ const ModalWindow: React.FC<ModalWindowProps> = (props) => {
     props.setShow(false);
   }
 
+  function submitBottonEvent(e: ISubmitEvent<UserConfig>) {
+    for (const key in e.formData) {
+      ConfigStore.userStore.set(key, e.formData[key]);
+    }
+  }
+
   const schema: JSONSchema7 = {
     type: "object",
     properties: {
-      asciiMode: { type: "boolean", title: " アスキー表示モード", default: false },
-      fontSize: { type: "number", title: "フォントサイズ（ピクセル指定）", default: 14 },
-      rowHeight: { type: "number", title: "1行の高さ（ピクセル指定）", default: 20 },
-      maxLineNum: { type: "number", title: "バイナリ表示時の横列最大数", default: 16 },
-      asciiMaxWidth: { type: "number", title: "アスキー表示モード時の横列最大幅（ピクセル指定）", default: 650 },
+      asciiMode: { type: "boolean", title: " アスキー表示モード", default: ConfigStore.userStore.get("asciiMode") },
+      fontSize: {
+        type: "number",
+        title: "フォントサイズ（ピクセル指定）",
+        default: ConfigStore.userStore.get("fontSize"),
+      },
+      rowHeight: {
+        type: "number",
+        title: "1行の高さ（ピクセル指定）",
+        default: ConfigStore.userStore.get("rowHeight"),
+      },
+      maxLineNum: {
+        type: "number",
+        title: "バイナリ表示時の横列最大数",
+        default: ConfigStore.userStore.get("maxLineNum"),
+      },
+      asciiMaxWidth: {
+        type: "number",
+        title: "アスキー表示モード時の横列最大幅（ピクセル指定）",
+        default: ConfigStore.userStore.get("asciiMaxWidth"),
+      },
       fontFamily: {
         type: "string",
         title: "使用するフォント",
-        default: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
+        default: ConfigStore.userStore.get("fontFamily"),
       },
     },
   };
-  const log = (type) => console.log.bind(console, type);
 
   if (props.show) {
     return (
@@ -111,7 +135,7 @@ const ModalWindow: React.FC<ModalWindowProps> = (props) => {
               <div className={ContentTitle}>　環境設定</div>
             </div>
             <div className={ContentMain}>
-              <Form schema={schema} onSubmit={log("submitted")} onError={log("errors")}>
+              <Form schema={schema} onSubmit={submitBottonEvent}>
                 <Button type="submit" variant="dark">
                   Apply
                 </Button>
