@@ -63,7 +63,7 @@ const Monitor: React.FC = () => {
   const { state: deviceStatus, setState: setDeviceStatus } = useContext(DeviceStatusContext);
   const canvasViewerRef = useRef<CanvasViewerRef>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(true);
+  const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(false);
 
   const counter = useRef<number>(0);
 
