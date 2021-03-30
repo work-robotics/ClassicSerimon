@@ -424,7 +424,7 @@ class CanvasViewer {
         this.addTextState.isReject = false;
       } else if (this.addTextState.counter == 0) {
         // 文字の読み込みが完了後に改行判定
-        this.checkEnterPoint(data[i], i + 1);
+        this.checkEnterPoint(data, i + 1);
         this.addTextState.mode = -1;
       }
     }
