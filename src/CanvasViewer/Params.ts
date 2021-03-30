@@ -5,6 +5,9 @@ export type UserConfig = {
   maxLineNum: number;
   asciiMode: boolean;
   asciiMaxWidth: number;
+};
+
+export type SysConfig = {
   baudrate: number;
 };
 

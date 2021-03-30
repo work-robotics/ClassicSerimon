@@ -10,8 +10,8 @@ const BaudrateSelector: React.FC = () => {
   const baudrateList = useRef<number[]>([9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1000000, 2000000]);
 
   useEffect(() => {
-    setBaudrateStatus({ selectedBaudrate: ConfigStore.store.get("baudrate") });
-    ConfigStore.store.onDidChange("baudrate", onBaudrateChange);
+    setBaudrateStatus({ selectedBaudrate: ConfigStore.sysStore.get("baudrate") });
+    ConfigStore.sysStore.onDidChange("baudrate", onBaudrateChange);
   }, []);
 
   function onBaudrateChange(baudrate: number) {
@@ -20,7 +20,7 @@ const BaudrateSelector: React.FC = () => {
 
   function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setBaudrateStatus({ selectedBaudrate: parseInt(event.target.value) });
-    ConfigStore.store.set("baudrate", parseInt(event.target.value));
+    ConfigStore.sysStore.set("baudrate", parseInt(event.target.value));
   }
 
   const Style = css`

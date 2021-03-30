@@ -1,34 +1,49 @@
 import Store, { Schema } from "electron-store";
-import { UserConfig } from "./CanvasViewer/Params";
+import { UserConfig, SysConfig } from "./CanvasViewer/Params";
 
-const defaultValue: UserConfig = {
+export const userDefaultValue: UserConfig = {
   fontSize: 14,
   rowHeight: 20,
   fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
   maxLineNum: 16,
   asciiMode: false,
   asciiMaxWidth: 650,
+};
+
+export const sysDefaultValue: SysConfig = {
   baudrate: 9600,
 };
 
 export class ConfigStore {
-  public schema: Schema<UserConfig>;
-  public store: Store<UserConfig>;
+  public userSchema: Schema<UserConfig>;
+  public userStore: Store<UserConfig>;
+
+  public sysSchema: Schema<SysConfig>;
+  public sysStore: Store<SysConfig>;
   constructor() {
-    this.store = new Store<UserConfig>({
+    this.userStore = new Store<UserConfig>({
       clearInvalidConfig: true,
-      defaults: defaultValue,
-      schema: this.schema,
-      name: "serimon_config",
+      defaults: userDefaultValue,
+      schema: this.userSchema,
+      name: "serimon_userconfig",
+      cwd: require("os").homedir(),
+      watch: true,
+    });
+
+    this.sysStore = new Store<SysConfig>({
+      clearInvalidConfig: true,
+      defaults: sysDefaultValue,
+      schema: this.sysSchema,
+      name: "serimon_sysconfig",
       cwd: require("os").homedir(),
       watch: true,
     });
   }
 
   public getData(): UserConfig {
-    let data: UserConfig = defaultValue;
-    for (const key in defaultValue) {
-      data[key] = this.store.get(key);
+    let data: UserConfig = userDefaultValue;
+    for (const key in userDefaultValue) {
+      data[key] = this.userStore.get(key);
     }
     return data;
   }
