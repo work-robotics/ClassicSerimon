@@ -68,7 +68,7 @@ export class Common {
         }
       }
       // 1Byte文字
-      if (data[i] >= 0x01 && data[i] <= 0x7f) {
+      if (data[i] >= 0x00 && data[i] <= 0x7f) {
         // 表示可能でない文字はスペースに置換する
         if (data[i] >= 0x00 && data[i] <= 0x09) {
           dataType = -1;
@@ -76,8 +76,9 @@ export class Common {
           dataType = -1;
         } else if (data[i] > 0x7f) {
           dataType = -1;
+        } else {
+          dataType = 1;
         }
-        dataType = 1;
       }
       if (dataType == -1) {
         data[i] = 0x20;
