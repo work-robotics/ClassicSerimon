@@ -1,6 +1,37 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
+const electron = require("electron-connect").server;
+const fs = require("fs");
+const { format } = require("util");
+
+class ElectronAutoRepload {
+  server = undefined;
+  intervalId = undefined;
+  mainProcessPath = "./dist/main.js";
+  constructor() {
+    this.intervalId = setInterval(() => {
+      if (this.server == undefined && fs.existsSync(this.mainProcessPath)) {
+        this.server = electron.create();
+        this.server.start();
+        console.log("\n\u001b[36m===================================================\u001b[0m");
+        console.log(format("\u001b[36m[%s] ElectronServer Start.\u001b[0m", new Date()));
+        console.log("\u001b[36m===================================================\u001b[0m\n");
+        clearInterval(this.intervalId);
+      }
+    }, 1000);
+  }
+  apply(compiler) {
+    compiler.hooks.done.tap("ElectronAutoRepload", () => {
+      if (this.server != undefined) {
+        this.server.reload();
+        console.log("\n\u001b[36m===================================================\u001b[0m");
+        console.log(format("\u001b[36m[%s] Renderer Reload.\u001b[0m", new Date()));
+        console.log("\u001b[36m===================================================\u001b[0m\n");
+      }
+    });
+  }
+}
 
 var electron_main = {
   mode: "development",
@@ -12,6 +43,7 @@ var electron_main = {
     rules: [{ test: /.ts?$/, loader: "ts-loader" }],
   },
   resolve: { extensions: [".js", ".ts"] },
+  plugins: [],
 };
 
 var electron_renderer = {
@@ -34,6 +66,7 @@ var electron_renderer = {
     ],
   },
   plugins: [
+    new ElectronAutoRepload(),
     new CopyPlugin({
       patterns: [
         { from: "./src/*.html", to: "[name].[ext]" },
