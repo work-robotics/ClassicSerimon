@@ -7,7 +7,7 @@
     "ts": "ts-node --project tsconfig.node.json --files",
     "start": "run-s clean build serve",
     "clean": "rimraf dist",
-    "build": "cross-env NODE_ENV=\"development\" webpack --progress --color",
+    "build": "cross-env APP_DEV=false cross-env NODE_ENV=\"development\" webpack --progress --color",
     "serve:watch": "cross-env NODE_ENV=\"development\" webpack --progress --color --watch",
     "serve": "electron dist/main.js",
     "dev": "run-s clean serve:watch",
