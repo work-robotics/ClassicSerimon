@@ -92,6 +92,7 @@ class TextView {
 
   // レイヤー初期化関数
   public initLayer(): void {
+    Konva.pixelRatio = 2.0;
     this.textLayer = new Konva.Layer();
 
     // インデックスの初期化
@@ -124,6 +125,7 @@ class TextView {
     // テキストの共通設定
     this.textConfig = {
       fontSize: this.params.fontSize,
+      fontStyle: "500",
       fontFamily: this.params.fontFamily,
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
