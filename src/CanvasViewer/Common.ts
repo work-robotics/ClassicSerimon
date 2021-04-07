@@ -27,12 +27,12 @@ export class Common {
     // テキスト検査用のテキスト
     this.tempText = new Konva.Text({ ...textConfig });
 
-    this.params.preMeasureFontSize["F"] = this.getTextWidth("あ");
-    this.params.preMeasureFontSize["W"] = this.getTextWidth("あ");
-    this.params.preMeasureFontSize["A"] = this.getTextWidth("あ");
-    this.params.preMeasureFontSize["H"] = this.getTextWidth("A");
+    this.params.preMeasureFontSize["F"] = this.getTextWidth("Ａ");
+    this.params.preMeasureFontSize["W"] = this.getTextWidth("ア");
+    this.params.preMeasureFontSize["A"] = this.getTextWidth("α");
+    this.params.preMeasureFontSize["H"] = this.getTextWidth("ｱ");
     this.params.preMeasureFontSize["Na"] = this.getTextWidth("A");
-    this.params.preMeasureFontSize["N"] = this.getTextWidth("A");
+    this.params.preMeasureFontSize["N"] = this.getTextWidth("À");
   }
 
   public getTextWidth(data: string): number {
