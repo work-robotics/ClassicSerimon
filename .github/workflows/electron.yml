@@ -9,6 +9,7 @@ jobs:
         os: [macOS-latest, windows-2019, ubuntu-18.04]
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
 
     steps:
       - name: Context
