@@ -125,7 +125,7 @@ class TextView {
     // テキストの共通設定
     this.textConfig = {
       fontSize: this.params.fontSize,
-      fontStyle: "500",
+      fontStyle: "600",
       fontFamily: this.params.fontFamily,
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
