@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import { client } from "electron-connect";
 const contextMenu = require("electron-context-menu");
-const isDev = require("electron-is-dev");
 const Store = require("electron-store");
 
 contextMenu({
@@ -30,6 +29,7 @@ function createWindow() {
   window.setMenu(null);
   window.loadFile("dist/contents/index.html");
 
+  var isDev = process.env.APP_DEV ? process.env.APP_DEV.trim() == "true" : false;
   if (isDev) {
     client.create(window);
   }
