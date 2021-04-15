@@ -10,3 +10,7 @@ export type UserConfig = {
 export type SysConfig = {
   baudrate: number;
 };
+
+export type CanvasViewerRef = {
+  getCanvasViewer(): CanvasViewer;
+};
