@@ -16,6 +16,10 @@ export type DeviceStatus = {
   selectedDevice: string;
 };
 
+export type MeasureFreq = {
+  time: number;
+};
+
 // ------------------------------------------------------------------
 
 // コンテキストの作成
@@ -25,6 +29,10 @@ export const BaudrateSelectorContext = createContext<StateContextType<BaudrateSt
 
 export const DeviceStatusContext = createContext<StateContextType<DeviceStatus>>({
   state: { selectedDevice: "" },
+});
+
+export const MeasureFreqContext = createContext<StateContextType<MeasureFreq>>({
+  state: { time: 0 },
 });
 
 // ------------------------------------------------------------------
@@ -45,13 +53,24 @@ const DeviceStatusProvider: React.FC = (props) => {
     </DeviceStatusContext.Provider>
   );
 };
+
+const MeasureFreqProvider: React.FC = (props) => {
+  const [measureFreq, setMeasureFreq] = useState<MeasureFreq>({ time: 0 });
+  return (
+    <MeasureFreqContext.Provider value={{ state: measureFreq, setState: setMeasureFreq }}>
+      {props.children}
+    </MeasureFreqContext.Provider>
+  );
+};
 // ------------------------------------------------------------------
 
 export const TotalProvider: React.FC = (props) => {
   console.log("[Update] TotalProvider");
   return (
     <BaudrateStatusProvider>
-      <DeviceStatusProvider>{props.children}</DeviceStatusProvider>
+      <DeviceStatusProvider>
+        <MeasureFreqProvider>{props.children}</MeasureFreqProvider>
+      </DeviceStatusProvider>
     </BaudrateStatusProvider>
   );
 };

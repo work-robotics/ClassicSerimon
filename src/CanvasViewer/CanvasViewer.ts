@@ -23,6 +23,8 @@ class CanvasViewer {
   public buffer2byte = Buffer.from([0, 0]);
   public buffer3byte = Buffer.from([0, 0, 0]);
   public buffer4byte = Buffer.from([0, 0, 0, 0]);
+  public currentReceiveCounter: number;
+  public enterReceiveCounter: number;
 
   constructor(id: string, option: UserConfig) {
     // 関数をバインド
@@ -35,6 +37,9 @@ class CanvasViewer {
     this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
     this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
     this.copyEvent = this.copyEvent.bind(this);
+
+    this.currentReceiveCounter = 0;
+    this.enterReceiveCounter = 0;
 
     // 各コンポーネントを初期化
     this.mainStage = new Konva.Stage({ container: id });
@@ -433,6 +438,7 @@ class CanvasViewer {
   // テキストを追加する関数
   public addText(data: number[]): void {
     for (let i = 0; i < data.length; i++) {
+      this.currentReceiveCounter++;
       // 何バイトの文字か判定
       this.byteConfirm(data[i]);
       // データを追加
@@ -481,6 +487,7 @@ class CanvasViewer {
     if (data == 10 || this.state.column_width_sum > this.params.userConfig.asciiMaxWidth) {
       this.state.enterPoint.append(setPoint);
       this.state.column_width_sum = 0;
+      this.enterReceiveCounter++;
     }
   }
 
@@ -535,13 +542,17 @@ class CanvasViewer {
   }
 
   // ステージの大きさを変更したいときに呼び出す
-  setStageSize(width: number, height: number) {
+  public setStageSize(width: number, height: number) {
     // ステージの大きさを変更
     this.mainStage.width(width);
     this.mainStage.height(height);
 
     // 各レイヤーに反映
     this.updateLayers();
+  }
+
+  public getParam(): Params {
+    return this.params;
   }
 
   // 各レイヤーを更新する関数

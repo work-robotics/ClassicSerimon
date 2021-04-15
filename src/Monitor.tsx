@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlug, faSave, faCog } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
-import ConfigStore from "./ConfigStore";
+import MeasureStatus from "./MeasureStatus";
 import ModalWindow from "./ModalWindow";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
@@ -169,7 +169,9 @@ const Monitor: React.FC = () => {
           <ReactCanvasViewer ref={canvasViewerRef} />
         </Row>
         <Row noGutters={true} className={FooterStyle}>
-          {/* <Col>Status</Col> */}
+          <Col>
+            <MeasureStatus />
+          </Col>
           <Col className={StatusMenu}>
             <DeviceSelector />
             <BaudrateSelector />
