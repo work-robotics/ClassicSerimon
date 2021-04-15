@@ -1,6 +1,8 @@
 import Konva from "konva";
 import Params, { UserConfig } from "./Params";
-import { ExtendArray, State } from "./State";
+import State from "./State";
+import ExtendArray from "./ExtendArray";
+
 import Common from "./Common";
 import TextView from "./TextView";
 import ScrollView from "./ScrollView";
