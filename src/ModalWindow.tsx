@@ -5,7 +5,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { JSONSchema7 } from "json-schema";
 import Form, { ISubmitEvent } from "@rjsf/core";
 import { Button } from "react-bootstrap";
-import { UserConfig, SysConfig } from "./CanvasViewer/Params";
+import { UserConfig } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 
 const Overlay = css`

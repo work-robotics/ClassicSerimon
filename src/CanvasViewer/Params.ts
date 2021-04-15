@@ -1,15 +1,4 @@
-export type UserConfig = {
-  fontSize: number;
-  rowHeight: number;
-  fontFamily: string;
-  maxLineNum: number;
-  asciiMode: boolean;
-  asciiMaxWidth: number;
-};
-
-export type SysConfig = {
-  baudrate: number;
-};
+import { UserConfig } from "./Types";
 
 export class Params {
   private _userConfig: UserConfig;

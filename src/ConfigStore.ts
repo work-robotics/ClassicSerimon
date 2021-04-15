@@ -1,5 +1,5 @@
 import Store, { Schema } from "electron-store";
-import { UserConfig, SysConfig } from "./CanvasViewer/Params";
+import { UserConfig, SysConfig } from "./CanvasViewer/Types";
 
 export const userDefaultValue: UserConfig = {
   fontSize: 14,

@@ -1,5 +1,6 @@
 import Konva from "konva";
-import Params, { UserConfig } from "./Params";
+import Params from "./Params";
+import { UserConfig } from "./Types";
 import State from "./State";
 import ExtendArray from "./ExtendArray";
 

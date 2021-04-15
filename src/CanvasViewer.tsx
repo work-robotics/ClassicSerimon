@@ -3,7 +3,7 @@ import Konva from "konva";
 import { css } from "emotion";
 import CanvasViewer from "./CanvasViewer/CanvasViewer";
 import uniqueId from "lodash/uniqueId";
-import { UserConfig } from "./CanvasViewer/Params";
+import { UserConfig } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 import { useInterval } from "react-timing-hooks";
 import { MeasureFreqContext } from "./TotalProvider";
