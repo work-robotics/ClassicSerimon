@@ -12,7 +12,7 @@ import { faPlug, faSave, faCog } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
 import MeasureStatus from "./MeasureStatus";
-import ModalWindow from "./ModalWindow";
+import ConfigPanel from "./ConfigPanel";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -179,7 +179,7 @@ const Monitor: React.FC = () => {
           </Col>
         </Row>
       </Container>
-      <ModalWindow show={openSettingWindow} setShow={setOpenSettingWindow} />
+      <ConfigPanel show={openSettingWindow} setShow={setOpenSettingWindow} />
     </>
   );
 };
