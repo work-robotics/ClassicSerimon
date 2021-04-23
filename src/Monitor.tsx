@@ -13,6 +13,8 @@ import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
 import MeasureStatus from "./MeasureStatus";
 import ConfigPanel from "./ConfigPanel";
+import SavePanel from "./SavePanel";
+import ConfigStore from "./ConfigStore";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -65,8 +67,14 @@ const Monitor: React.FC = () => {
   const canvasViewerRef = useRef<CanvasViewerRef>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(false);
+  const [openSaveWindow, setOpenSaveWindow] = useState<boolean>(false);
 
   const counter = useRef<number>(0);
+
+  function saveBottonHandler(e) {
+    e.preventDefault();
+    setOpenSaveWindow(true);
+  }
 
   function settingBottonHandler(e) {
     e.preventDefault();
@@ -98,8 +106,7 @@ const Monitor: React.FC = () => {
     }
   }
 
-  function saveBottonHandler(e) {
-    e.preventDefault();
+  function saveHandler() {
     if (SerialPortRef.current != undefined) {
       SerialPortRef.current.pause();
     }
@@ -110,11 +117,14 @@ const Monitor: React.FC = () => {
           const fd = fs.openSync(result.filePath, "w");
           // メタ情報の追加
           fs.writeSync(fd, "VERSION:0.0.1\n");
-          fs.writeSync(fd, "PROTOCOL:None\n");
-          fs.writeSync(fd, "USER:WorkRobotics\n");
           fs.writeSync(fd, "TIMESTAMP:" + Date.now().toString() + "\n");
-          fs.writeSync(fd, "LOCATION:Home\n");
-          fs.writeSync(fd, "DESCRIPTION:試験用のテストデータです。\n");
+          fs.writeSync(fd, "USER:" + ConfigStore.metaStore.get("user") + "\n");
+          fs.writeSync(fd, "DATE:" + ConfigStore.metaStore.get("date") + "\n");
+          fs.writeSync(fd, "LOCATION:" + ConfigStore.metaStore.get("location") + "\n");
+          fs.writeSync(fd, "EXPERIMENT_NAME:" + ConfigStore.metaStore.get("expName") + "\n");
+          fs.writeSync(fd, "EXPERIMENT_DESCRIPTION:" + ConfigStore.metaStore.get("expDescription") + "\n");
+          fs.writeSync(fd, "DEVICECODE:" + ConfigStore.metaStore.get("deviceCode") + "\n");
+          fs.writeSync(fd, "MEMO:" + ConfigStore.metaStore.get("memo") + "\n");
           fs.writeSync(fd, "---\n");
           const textSize = canvasViewerRef.current.getCanvasViewer().getTextsSize();
           const blockSize = 1024;
@@ -180,6 +190,7 @@ const Monitor: React.FC = () => {
         </Row>
       </Container>
       <ConfigPanel show={openSettingWindow} setShow={setOpenSettingWindow} />
+      <SavePanel show={openSaveWindow} setShow={setOpenSaveWindow} saveRequest={saveHandler} />
     </>
   );
 };

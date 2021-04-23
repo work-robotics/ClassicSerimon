@@ -1,5 +1,5 @@
 import Store, { Schema } from "electron-store";
-import { UserConfig, SysConfig } from "./CanvasViewer/Types";
+import { UserConfig, SysConfig, metaConfig } from "./CanvasViewer/Types";
 
 export const userDefaultValue: UserConfig = {
   fontSize: 14,
@@ -14,12 +14,26 @@ export const sysDefaultValue: SysConfig = {
   baudrate: 9600,
 };
 
+export const metaDefaultValue: metaConfig = {
+  user: "",
+  date: "",
+  location: "",
+  expName: "",
+  expDescription: "",
+  deviceCode: "",
+  memo: "",
+};
+
 export class ConfigStore {
   public userSchema: Schema<UserConfig>;
   public userStore: Store<UserConfig>;
 
   public sysSchema: Schema<SysConfig>;
   public sysStore: Store<SysConfig>;
+
+  public metaSchema: Schema<metaConfig>;
+  public metaStore: Store<metaConfig>;
+
   constructor() {
     this.userStore = new Store<UserConfig>({
       clearInvalidConfig: true,
@@ -35,6 +49,15 @@ export class ConfigStore {
       defaults: sysDefaultValue,
       schema: this.sysSchema,
       name: "serimon_sysconfig",
+      cwd: require("os").homedir(),
+      watch: true,
+    });
+
+    this.metaStore = new Store<metaConfig>({
+      clearInvalidConfig: true,
+      defaults: metaDefaultValue,
+      schema: this.metaSchema,
+      name: "serimon_metaConfig",
       cwd: require("os").homedir(),
       watch: true,
     });
