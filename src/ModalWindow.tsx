@@ -2,42 +2,41 @@ import React, { ReactElement } from "react";
 import { css } from "emotion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import CustomStyle from "./CustomStyle";
 
 const Overlay = css`
+  ${CustomStyle.modalWindow.overlay}
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
 const OverlayContent = css`
+  ${CustomStyle.modalWindow.overlayContent}
   z-index: 2;
   margin: 0;
   padding: 0;
   width: 70%;
   height: 70%;
-  background: #fff;
   padding: 0;
   border-radius: 10px;
-  border: 1px solid #242424;
   overflow-y: hidden;
   font-size: 16px;
   font-weight: bold;
-  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ContentHeader = css`
+  ${CustomStyle.modalWindow.contentHeader}
   width: 100%;
   height: 50px;
   padding-top: 10px;
   display: flex;
   position: relative;
-  border-bottom: 1px solid #000;
 `;
 
 const ContentMain = css`
@@ -48,6 +47,7 @@ const ContentMain = css`
 `;
 
 const CloseBotton = css`
+  ${CustomStyle.modalWindow.closeBotton}
   width: 30px;
   height: 30px;
   position: absolute;
@@ -56,10 +56,8 @@ const CloseBotton = css`
   justify-content: center;
   align-items: center;
   font-size: 20px;
-  background: #eee;
   border-radius: 10px;
   :hover {
-    background: #ddd;
     cursor: pointer;
   }
 `;

@@ -15,6 +15,7 @@ import MeasureStatus from "./MeasureStatus";
 import ConfigPanel from "./ConfigPanel";
 import SavePanel from "./SavePanel";
 import ConfigStore from "./ConfigStore";
+import CustomStyle from "./CustomStyle";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -23,25 +24,22 @@ const ContainerStyle = css`
 `;
 
 const HeaderStyle = css`
+  ${CustomStyle.monitor.header}
   height: 50px;
   text-align: right;
   align-items: center;
   padding: 0 15px 0 15px;
-  background-color: #e8e8e8;
-  border-bottom: solid 1px #d3d3d3;
-  border-top: solid 1px #d3d3d3;
 `;
 
 const ContentStyle = css`
+  ${CustomStyle.monitor.content}
   height: calc(100vh - 75px);
-  background-color: #fff;
 `;
 
 const FooterStyle = css`
-  border-top: solid 1px #d3d3d3;
+  ${CustomStyle.monitor.footer}
   height: 25px;
   padding: 0 0 0 10px;
-  background-color: #e6e6e6;
 `;
 
 // FooterStyleで適用しているボーダと一体化させるためのmargin-topを-1px
