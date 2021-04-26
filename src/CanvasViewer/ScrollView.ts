@@ -2,6 +2,7 @@ import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
 import Common from "./Common";
+import CanvasColor from "./CanvasColor";
 
 class ScrollView {
   private params: Params;
@@ -57,13 +58,13 @@ class ScrollView {
     };
 
     // スクロールバーの背景
-    this.scrollBarBackground = new Konva.Rect({ ...BarConfig, fill: "#CCC" });
+    this.scrollBarBackground = new Konva.Rect({ ...BarConfig, fill: CanvasColor.scrollBarBackground });
 
     // スクロールバー
     this.scrollBar = new Konva.Rect({
       ...BarConfig,
       height: 20,
-      fill: "#333",
+      fill: CanvasColor.scrollBar,
       draggable: true,
       dragBoundFunc: this.scrollBarDragEvent.bind(this),
     });

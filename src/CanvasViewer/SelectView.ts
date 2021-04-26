@@ -2,6 +2,7 @@ import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
 import Common from "./Common";
+import CanvasColor from "./CanvasColor";
 
 class SelectView {
   private params: Params;
@@ -54,7 +55,7 @@ class SelectView {
     // セレクトボックスの共通設定
     const lineConfig: Konva.LineConfig = {
       points: [],
-      fill: "#0000ff",
+      fill: CanvasColor.selectColor,
       opacity: 0.2,
       strokeEnabled: false,
       closed: true,

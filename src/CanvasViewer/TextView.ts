@@ -3,6 +3,7 @@ import Konva from "konva";
 import Params from "./Params";
 import State from "./State";
 import Common from "./Common";
+import CanvasColor from "./CanvasColor";
 
 class TextView {
   private params: Params;
@@ -101,14 +102,14 @@ class TextView {
 
     // 行番号の背景
     this.textLineBackground = new Konva.Rect({
-      fill: "#424242",
+      fill: CanvasColor.textLineBackground,
       width: this.params.lineNumbersWidth,
       height: this.mainStage.height(),
     });
 
     // 列番号の背景
     this.textTopBackground = new Konva.Rect({
-      fill: "#333333",
+      fill: CanvasColor.textTopBackground,
       width: this.mainStage.width(),
       height: this.params.topNumberHeight,
     });
@@ -117,7 +118,7 @@ class TextView {
     this.textBorder = new Konva.Rect({
       x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight + this.params.userConfig.asciiMaxWidth + 20,
       y: this.params.paddingCanvasTop,
-      fill: "#f2f2f2",
+      fill: CanvasColor.textBorder,
       width: 2,
       height: 0,
     });
@@ -141,7 +142,7 @@ class TextView {
     this.textLineNumContent = new Konva.Text({
       ...this.textConfig,
       y: this.params.paddingCanvasTop,
-      fill: "#FFF",
+      fill: CanvasColor.textLineNumContent,
       align: "center",
       width: this.params.lineNumbersWidth,
     });
@@ -151,7 +152,7 @@ class TextView {
       ...this.textConfig,
       x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight,
       y: this.params.rowHeight / 3,
-      fill: "#FFF",
+      fill: CanvasColor.textTopNumContent,
       width: this.mainStage.width(),
     });
 
