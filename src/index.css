@@ -4,6 +4,8 @@ body {
   color: #ffffff;
   font-size: 40px;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 
 :focus {

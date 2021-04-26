@@ -40,12 +40,19 @@ const FooterStyle = css`
   ${CustomStyle.monitor.footer}
   height: 25px;
   padding: 0 0 0 10px;
+  background-color: #e6e6e6;
 `;
 
 // FooterStyleで適用しているボーダと一体化させるためのmargin-topを-1px
-const StatusMenu = css`
+const StatusLeftMenu = css`
   text-align: right;
   margin-top: -1px;
+`;
+
+const StatusRightMenu = css`
+  font-size: 14px;
+  font-weight: bold;
+  font-family: Yu Gothic UI, Helvetica, Ubuntu;
 `;
 
 const LeftMenu = css`
@@ -177,13 +184,25 @@ const Monitor: React.FC = () => {
         <Row noGutters={true} className={HeaderStyle}>
           <Col className={LeftMenu}>
             {isConnected && (
-              <Button variant="danger" onClick={startBottonHandler}>
-                <FontAwesomeIcon icon={faPlug} /> {" Stop"}
+              <Button variant="dark" onClick={startBottonHandler}>
+                <FontAwesomeIcon
+                  icon={faPlug}
+                  className={css`
+                    color: #fd9a9a;
+                  `}
+                />{" "}
+                {" Stop"}
               </Button>
             )}
             {!isConnected && (
-              <Button variant="success" onClick={startBottonHandler}>
-                <FontAwesomeIcon icon={faPlug} /> {" Start"}
+              <Button variant="dark" onClick={startBottonHandler}>
+                <FontAwesomeIcon
+                  icon={faPlug}
+                  className={css`
+                    color: #ffffff;
+                  `}
+                />{" "}
+                {" Start"}
               </Button>
             )}
           </Col>
@@ -192,10 +211,10 @@ const Monitor: React.FC = () => {
               <FontAwesomeIcon icon={faCog} />
               {" Open Setting"}
             </Button>{" "}
-            <Button variant="secondary" onClick={saveBottonHandler}>
+            <Button variant="dark" onClick={saveBottonHandler}>
               <FontAwesomeIcon icon={faSave} /> {" Save"}
             </Button>{" "}
-            <Button variant="info" onClick={clearBottonHandler}>
+            <Button variant="dark" onClick={clearBottonHandler}>
               <FontAwesomeIcon icon={faSave} /> {" Clear"}
             </Button>
           </Col>
@@ -204,10 +223,10 @@ const Monitor: React.FC = () => {
           <ReactCanvasViewer ref={canvasViewerRef} />
         </Row>
         <Row noGutters={true} className={FooterStyle}>
-          <Col>
+          <Col className={StatusRightMenu}>
             <MeasureStatus />
           </Col>
-          <Col className={StatusMenu}>
+          <Col className={StatusLeftMenu}>
             <DeviceSelector />
             <BaudrateSelector />
           </Col>

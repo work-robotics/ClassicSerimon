@@ -15,6 +15,9 @@ const Selector: React.FC<SelectorProps> = (props) => {
     font-size: 16px;
     height: 100%;
     width: ${props.width};
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Yu Gothic UI, Helvetica, Ubuntu;
   `;
 
   return (
