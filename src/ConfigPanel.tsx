@@ -51,6 +51,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
         title: "使用するフォント",
         default: ConfigStore.userStore.get("fontFamily"),
       },
+      darkMode: { type: "boolean", title: " ダークモード", default: ConfigStore.userStore.get("darkMode") },
     },
   };
 

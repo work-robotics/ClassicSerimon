@@ -66,8 +66,34 @@ const Monitor: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(false);
   const [openSaveWindow, setOpenSaveWindow] = useState<boolean>(false);
+  const [changeColorMode, setChangeColorMode] = useState<boolean>();
 
   const counter = useRef<number>(0);
+
+  useEffect(() => {
+    ConfigStore.userStore.onDidChange("darkMode", (data: boolean) => {
+      setChangeColorMode(data);
+    });
+  }, []);
+
+  const HeaderStyle = css`
+    ${CustomStyle.monitor.header}
+    height: 50px;
+    text-align: right;
+    align-items: center;
+    padding: 0 15px 0 15px;
+  `;
+
+  const ContentStyle = css`
+    ${CustomStyle.monitor.content}
+    height: calc(100vh - 75px);
+  `;
+
+  const FooterStyle = css`
+    ${CustomStyle.monitor.footer}
+    height: 25px;
+    padding: 0 0 0 10px;
+  `;
 
   function saveBottonHandler(e) {
     e.preventDefault();

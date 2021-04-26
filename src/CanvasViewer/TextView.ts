@@ -126,7 +126,7 @@ class TextView {
     // テキストの共通設定
     this.textConfig = {
       fontSize: this.params.fontSize,
-      fontStyle: "600",
+      fontStyle: "500",
       fontFamily: this.params.fontFamily,
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
@@ -134,6 +134,7 @@ class TextView {
     // データ表示のテキスト
     this.textDataContent = new Konva.Text({
       ...this.textConfig,
+      fill: CanvasColor.textDataContent,
       x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight,
       y: this.params.paddingCanvasTop,
     });

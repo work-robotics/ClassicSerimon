@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { css } from "emotion";
+import CustomStyle from "./CustomStyle";
 
 export type SelectorProps = {
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -10,9 +11,8 @@ export type SelectorProps = {
 
 const Selector: React.FC<SelectorProps> = (props) => {
   const Style = css`
+    ${CustomStyle.selector}
     font-size: 16px;
-    color: #3d3d3d;
-    background-color: #f1f1f1;
     height: 100%;
     width: ${props.width};
   `;

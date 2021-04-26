@@ -7,6 +7,7 @@ import { UserConfig, CanvasViewerRef } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 import { useInterval } from "react-timing-hooks";
 import { MeasureFreqContext } from "./TotalProvider";
+import CustomStyle from "./CustomStyle";
 
 const CanvasStyle = css`
   width: 100%;
@@ -61,6 +62,11 @@ const ReactCanvasViewer = forwardRef<CanvasViewerRef>((props, ref) => {
   }
 
   function onDidChangeStore(data: UserConfig) {
+    if (data.darkMode) {
+      CustomStyle.setDarkColor();
+    } else {
+      CustomStyle.setLightColor();
+    }
     CanvasViewerRef.current.setParam(data);
   }
 

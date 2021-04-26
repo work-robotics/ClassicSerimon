@@ -10,6 +10,7 @@ export const userDefaultValue: UserConfig = {
   fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
   maxLineNum: 16,
   asciiMode: false,
+  darkMode: false,
   asciiMaxWidth: 650,
 };
 

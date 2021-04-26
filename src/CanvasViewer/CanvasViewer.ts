@@ -9,6 +9,7 @@ import TextView from "./TextView";
 import ScrollView from "./ScrollView";
 import SelectView from "./SelectView";
 import easta from "easta";
+import CanvasColor from "./CanvasColor";
 
 class CanvasViewer {
   // 描画用のステージ
@@ -524,6 +525,11 @@ class CanvasViewer {
   // パラメータを更新する関数
   public setParam(data: UserConfig) {
     this.params.userConfig = data;
+    if (data.darkMode) {
+      CanvasColor.setDarkColor();
+    } else {
+      CanvasColor.setLightColor();
+    }
     // レイヤーを再描画
     this.mainStage.destroyChildren();
     this.common.init();

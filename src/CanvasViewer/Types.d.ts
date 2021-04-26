@@ -4,6 +4,7 @@ export type UserConfig = {
   fontFamily: string;
   maxLineNum: number;
   asciiMode: boolean;
+  darkMode: boolean;
   asciiMaxWidth: number;
 };
 
