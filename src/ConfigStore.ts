@@ -47,7 +47,7 @@ export class ConfigStore {
       clearInvalidConfig: true,
       defaults: userDefaultValue,
       schema: this.userSchema,
-      name: "serimon_userconfig",
+      name: "userconfig",
       cwd: confPath,
       watch: true,
     });
@@ -56,7 +56,7 @@ export class ConfigStore {
       clearInvalidConfig: true,
       defaults: sysDefaultValue,
       schema: this.sysSchema,
-      name: "serimon_sysconfig",
+      name: "system",
       cwd: confPath,
       watch: true,
     });
@@ -65,7 +65,7 @@ export class ConfigStore {
       clearInvalidConfig: true,
       defaults: metaDefaultValue,
       schema: this.metaSchema,
-      name: "serimon_metaConfig",
+      name: "meta",
       cwd: confPath,
       watch: true,
     });
