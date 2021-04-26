@@ -1,5 +1,8 @@
 import Store, { Schema } from "electron-store";
 import { UserConfig, SysConfig, metaConfig } from "./CanvasViewer/Types";
+import fs from "fs";
+import path from "path";
+import RootPath from "./RootPath";
 
 export const userDefaultValue: UserConfig = {
   fontSize: 14,
@@ -35,12 +38,17 @@ export class ConfigStore {
   public metaStore: Store<metaConfig>;
 
   constructor() {
+    const confDataDirName = "user-datas";
+    const confPath = path.join(RootPath(), confDataDirName);
+    fs.mkdir(confPath, (err) => {
+      if (err) throw err;
+    });
     this.userStore = new Store<UserConfig>({
       clearInvalidConfig: true,
       defaults: userDefaultValue,
       schema: this.userSchema,
       name: "serimon_userconfig",
-      cwd: require("os").homedir(),
+      cwd: confPath,
       watch: true,
     });
 
@@ -49,7 +57,7 @@ export class ConfigStore {
       defaults: sysDefaultValue,
       schema: this.sysSchema,
       name: "serimon_sysconfig",
-      cwd: require("os").homedir(),
+      cwd: confPath,
       watch: true,
     });
 
@@ -58,7 +66,7 @@ export class ConfigStore {
       defaults: metaDefaultValue,
       schema: this.metaSchema,
       name: "serimon_metaConfig",
-      cwd: require("os").homedir(),
+      cwd: confPath,
       watch: true,
     });
   }

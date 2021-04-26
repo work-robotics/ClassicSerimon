@@ -52,6 +52,7 @@
     "easta": "^5.0.0",
     "electron-connect": "^0.6.3",
     "electron-context-menu": "^2.3.0",
+    "electron-is-packaged": "^1.0.2",
     "electron-store": "^7.0.2",
     "emotion": "^10.0.27",
     "konva": "^7.1.4",
