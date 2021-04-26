@@ -1,7 +1,7 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect } from "react";
 import { BaudrateSelectorContext } from "./TotalProvider";
-import { css } from "emotion";
 import ConfigStore from "./ConfigStore";
+import Selector from "./Selector";
 
 const BaudrateSelector: React.FC = () => {
   console.log("[Run] BaudrateSelector");
@@ -23,14 +23,6 @@ const BaudrateSelector: React.FC = () => {
     ConfigStore.sysStore.set("baudrate", parseInt(event.target.value));
   }
 
-  const Style = css`
-    font-size: 16px;
-    color: #3d3d3d;
-    background-color: #f1f1f1;
-    height: 100%;
-    width: 100px;
-  `;
-
   const contents = baudrateList.current.map((data, index) => (
     <option key={index} value={data}>
       {" "}
@@ -39,9 +31,7 @@ const BaudrateSelector: React.FC = () => {
   ));
   return (
     <>
-      <select className={Style} onChange={onChange} value={baudrateStatus.selectedBaudrate}>
-        {contents}
-      </select>
+      <Selector width={"100px"} onChange={onChange} value={baudrateStatus.selectedBaudrate} content={contents} />
     </>
   );
 };
