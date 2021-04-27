@@ -21,7 +21,3 @@ export type metaConfig = {
 export type SysConfig = {
   baudrate: number;
 };
-
-export type CanvasViewerRef = {
-  getCanvasViewer(): CanvasViewer;
-};

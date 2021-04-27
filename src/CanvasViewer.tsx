@@ -3,11 +3,15 @@ import Konva from "konva";
 import { css } from "emotion";
 import CanvasViewer from "./CanvasViewer/CanvasViewer";
 import uniqueId from "lodash/uniqueId";
-import { UserConfig, CanvasViewerRef } from "./CanvasViewer/Types";
+import { UserConfig } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 import { useInterval } from "react-timing-hooks";
 import { MeasureFreqContext } from "./TotalProvider";
 import CustomStyle from "./CustomStyle";
+
+export type CanvasViewerRef = {
+  getCanvasViewer(): CanvasViewer;
+};
 
 const CanvasStyle = css`
   width: 100%;

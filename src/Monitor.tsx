@@ -6,7 +6,7 @@ import { css } from "emotion";
 import BaudrateSelector from "./BaudrateSelector";
 import DeviceSelector from "./DeviceSelector";
 import ReactCanvasViewer from "./CanvasViewer";
-import { CanvasViewerRef } from "./CanvasViewer/Types";
+import { CanvasViewerRef } from "./CanvasViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlug, faSave, faCog, faBroom } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
