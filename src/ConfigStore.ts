@@ -40,9 +40,11 @@ export class ConfigStore {
   constructor() {
     const confDataDirName = "user-datas";
     const confPath = path.join(RootPath(), confDataDirName);
-    fs.mkdir(confPath, (err) => {
-      if (err) throw err;
-    });
+    if (!fs.existsSync(confPath)) {
+      fs.mkdir(confPath, (err) => {
+        if (err) throw err;
+      });
+    }
     this.userStore = new Store<UserConfig>({
       clearInvalidConfig: true,
       defaults: userDefaultValue,
