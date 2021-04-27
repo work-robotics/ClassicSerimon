@@ -251,18 +251,18 @@ const Monitor: React.FC = () => {
                   />{" "}
                   {" Start"}
                 </Button>
-              )}
+              )}{" "}
+              <Button variant="dark" onClick={clearBottonHandler}>
+                <FontAwesomeIcon icon={faBroom} /> {" Clear"}
+              </Button>
             </Col>
             <Col className={RightMenu}>
-              <Button variant="dark" onClick={settingBottonHandler}>
-                <FontAwesomeIcon icon={faCog} />
-                {" Open Setting"}
-              </Button>{" "}
               <Button variant="dark" onClick={saveBottonHandler}>
                 <FontAwesomeIcon icon={faSave} /> {" Save"}
               </Button>{" "}
-              <Button variant="dark" onClick={clearBottonHandler}>
-                <FontAwesomeIcon icon={faSave} /> {" Clear"}
+              <Button variant="dark" onClick={settingBottonHandler}>
+                <FontAwesomeIcon icon={faCog} />
+                {" Setting"}
               </Button>
             </Col>
           </Row>
