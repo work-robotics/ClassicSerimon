@@ -15,8 +15,8 @@ function createWindow() {
   Store.initRenderer();
   const window = new BrowserWindow({
     width: 800,
-    height: 600,
-    minHeight: 500,
+    height: 515,
+    minHeight: 515,
     minWidth: 800,
     useContentSize: true,
     resizable: true,
