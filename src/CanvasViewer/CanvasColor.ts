@@ -40,8 +40,8 @@ export class CanvasColor {
     this.textLineNumContent = "#BBBBBB";
     this.textTopNumContent = "#BBBBBB";
     this.selectColor = "#FFF";
-    this.scrollBarBackground = "#CCC";
-    this.scrollBar = "#333";
+    this.scrollBarBackground = "#21252B";
+    this.scrollBar = "#787c81";
   }
 }
 
