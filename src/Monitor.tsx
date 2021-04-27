@@ -8,7 +8,7 @@ import DeviceSelector from "./DeviceSelector";
 import ReactCanvasViewer from "./CanvasViewer";
 import { CanvasViewerRef } from "./CanvasViewer/Types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlug, faSave, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faPlug, faSave, faCog, faBroom } from "@fortawesome/free-solid-svg-icons";
 import SerialPort from "serialport";
 import { BaudrateSelectorContext, DeviceStatusContext } from "./TotalProvider";
 import MeasureStatus from "./MeasureStatus";
@@ -52,6 +52,19 @@ const StatusLeftMenu = css`
 const StatusRightMenu = css`
   font-size: 14px;
   font-weight: bold;
+  margin-left: 10px;
+  font-family: Yu Gothic UI, Helvetica, Ubuntu;
+`;
+
+const StatusRightLogo = css`
+  width: 90px;
+  height: 25px;
+  margin-top: -2px;
+  margin-left: -10px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border-right: 1px solid #b4b4b4;
   font-family: Yu Gothic UI, Helvetica, Ubuntu;
 `;
 
@@ -223,6 +236,11 @@ const Monitor: React.FC = () => {
           <ReactCanvasViewer ref={canvasViewerRef} />
         </Row>
         <Row noGutters={true} className={FooterStyle}>
+          <div className={StatusRightLogo}>
+            <a href="https://work-robotics.co.jp/" target="_blank">
+              <img src={"./Images/wrlogo.png"} height={8} alt="" />
+            </a>
+          </div>
           <Col className={StatusRightMenu}>
             <MeasureStatus />
           </Col>
