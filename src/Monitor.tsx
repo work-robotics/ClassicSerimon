@@ -128,6 +128,7 @@ const Monitor: React.FC = () => {
   function clearBottonHandler(e) {
     e.preventDefault();
     canvasViewerRef.current.getCanvasViewer().clearText();
+    canvasViewerRef.current.getCanvasViewer().cleanFirstReceivedDate();
     counter.current = 0;
   }
 
@@ -138,6 +139,9 @@ const Monitor: React.FC = () => {
         baudRate: baudrateStatus.selectedBaudrate,
       });
       SerialPortRef.current.on("data", (data) => {
+        if (!canvasViewerRef.current.getCanvasViewer().isSettedFirstReceivedDate()) {
+          canvasViewerRef.current.getCanvasViewer().setFirstReceivedDate();
+        }
         for (const d of data) {
           canvasViewerRef.current.getCanvasViewer().addText([d]);
         }
@@ -161,7 +165,13 @@ const Monitor: React.FC = () => {
           const fd = fs.openSync(result.filePath, "w");
           // メタ情報の追加
           fs.writeSync(fd, "VERSION:0.0.1\n");
-          fs.writeSync(fd, "TIMESTAMP:" + Date.now().toString() + "\n");
+          fs.writeSync(fd, "SAVE_TIMESTAMP:" + new Date().getTime().toString() + "\n");
+          const firstReceivedDate = canvasViewerRef.current.getCanvasViewer().getFirstReceivedDate();
+          if (firstReceivedDate != undefined) {
+            fs.writeSync(fd, "FIRSTRECEIVED_TIMESTAMP:" + firstReceivedDate.getTime() + "\n");
+          } else {
+            fs.writeSync(fd, "FIRSTRECEIVED_TIMESTAMP:" + "\n");
+          }
           fs.writeSync(fd, "USER:" + ConfigStore.metaStore.get("user") + "\n");
           fs.writeSync(fd, "DATE:" + ConfigStore.metaStore.get("date") + "\n");
           fs.writeSync(fd, "LOCATION:" + ConfigStore.metaStore.get("location") + "\n");

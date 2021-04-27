@@ -1,9 +1,11 @@
+import { Data } from "electron/main";
 import ExtendArray from "./ExtendArray";
 
 export class State {
   public rowTopIndex: number;
   public rowBottomIndex: number;
   public rawDatas: ExtendArray;
+  public firstReceivedDate: Date;
   public viewTextDatas: string[];
   public renderDataWidth: number[];
   public scrollHeight: number;
@@ -32,6 +34,7 @@ export class State {
     this.rowTopIndex = 0;
     this.rowBottomIndex = 0;
     this.rawDatas = new ExtendArray();
+    this.firstReceivedDate = undefined;
     this.renderDataWidth = [];
     this.scrollHeight = 0;
     this.scrollTop = 0;

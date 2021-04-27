@@ -570,6 +570,22 @@ class CanvasViewer {
     this.selectView.updateLayer();
     this.scrollView.updateLayer();
   }
+
+  public isSettedFirstReceivedDate(): boolean {
+    return this.state.firstReceivedDate != undefined;
+  }
+
+  public setFirstReceivedDate(): void {
+    this.state.firstReceivedDate = new Date();
+  }
+
+  public getFirstReceivedDate(): Date {
+    return this.state.firstReceivedDate;
+  }
+
+  public cleanFirstReceivedDate() {
+    this.state.firstReceivedDate = undefined;
+  }
 }
 
 export default CanvasViewer;
