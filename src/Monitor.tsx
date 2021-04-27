@@ -16,6 +16,8 @@ import ConfigPanel from "./ConfigPanel";
 import SavePanel from "./SavePanel";
 import ConfigStore from "./ConfigStore";
 import CustomStyle from "./CustomStyle";
+import path from "path";
+import dateFormat from "dateformat";
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -159,13 +161,27 @@ const Monitor: React.FC = () => {
       SerialPortRef.current.pause();
     }
     remote.dialog
-      .showSaveDialog(null, { properties: ["createDirectory"] })
+      .showOpenDialog(null, { properties: ["openDirectory"] })
       .then((result) => {
+        // console.log(result.filePaths[0]);
+        let filename = "";
+
+        // デバイスコードをファイル名に含める
+        const deviceCode = ConfigStore.metaStore.get("deviceCode");
+        if (deviceCode == "") {
+          filename += "NODEVICECODE_";
+        } else {
+          filename += deviceCode + "_";
+        }
+
+        // 保存時のタイムスタンプを作成してファイル名に含める
+        const saveTimeStamp = new Date();
+        filename += dateFormat(saveTimeStamp, "yyyymmdd-HHMMss") + ".wrel";
         if (!result.canceled) {
-          const fd = fs.openSync(result.filePath, "w");
+          const fd = fs.openSync(path.join(result.filePaths[0], filename), "w");
           // メタ情報の追加
           fs.writeSync(fd, "VERSION:0.0.1\n");
-          fs.writeSync(fd, "SAVE_TIMESTAMP:" + new Date().getTime().toString() + "\n");
+          fs.writeSync(fd, "SAVE_TIMESTAMP:" + saveTimeStamp.getTime() + "\n");
           const firstReceivedDate = canvasViewerRef.current.getCanvasViewer().getFirstReceivedDate();
           if (firstReceivedDate != undefined) {
             fs.writeSync(fd, "FIRSTRECEIVED_TIMESTAMP:" + firstReceivedDate.getTime() + "\n");

@@ -49,6 +49,7 @@
     "@rjsf/core": "^2.5.1",
     "bootstrap": "^4.5.3",
     "css-loader": "^5.0.0",
+    "dateformat": "^4.5.1",
     "easta": "^5.0.0",
     "electron-connect": "^0.6.3",
     "electron-context-menu": "^2.3.0",
