@@ -46,11 +46,6 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
         title: "アスキー表示モード時の横列最大幅（ピクセル指定）",
         default: ConfigStore.userStore.get("asciiMaxWidth"),
       },
-      fontFamily: {
-        type: "string",
-        title: "使用するフォント",
-        default: ConfigStore.userStore.get("fontFamily"),
-      },
       darkMode: { type: "boolean", title: " ダークモード", default: ConfigStore.userStore.get("darkMode") },
     },
   };

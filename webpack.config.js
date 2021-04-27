@@ -78,6 +78,7 @@ var electron_renderer = {
         { from: "./src/*.html", to: "[name].[ext]" },
         { from: "./src/*.css", to: "[name].[ext]" },
         { from: "./src/Images/*.png", to: "Images/[name].[ext]" },
+        { from: "./src/Fonts/*", to: "./Fonts/[name].[ext]" },
       ],
     }),
   ],

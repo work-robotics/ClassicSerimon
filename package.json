@@ -56,6 +56,7 @@
     "electron-is-packaged": "^1.0.2",
     "electron-store": "^7.0.2",
     "emotion": "^10.0.27",
+    "fontfaceobserver": "^2.1.0",
     "konva": "^7.1.4",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",

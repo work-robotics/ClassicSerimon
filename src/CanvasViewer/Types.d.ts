@@ -1,7 +1,6 @@
 export type UserConfig = {
   fontSize: number;
   rowHeight: number;
-  fontFamily: string;
   maxLineNum: number;
   asciiMode: boolean;
   darkMode: boolean;

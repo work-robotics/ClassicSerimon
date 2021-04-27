@@ -53,14 +53,6 @@ export class Params {
     this._userConfig.fontSize = data;
   }
 
-  get fontFamily(): string {
-    return this._userConfig.fontFamily;
-  }
-
-  set fontFamily(data: string) {
-    this._userConfig.fontFamily = data;
-  }
-
   get maxLineNum(): number {
     return this._userConfig.maxLineNum;
   }

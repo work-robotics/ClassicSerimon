@@ -7,7 +7,6 @@ import RootPath from "./RootPath";
 export const userDefaultValue: UserConfig = {
   fontSize: 14,
   rowHeight: 20,
-  fontFamily: "JetBrains Mono, Source Han Code JP, Menlo, Consolas",
   maxLineNum: 16,
   asciiMode: false,
   darkMode: false,

@@ -21,7 +21,7 @@ export class Common {
     // テキストの共通設定
     const textConfig = {
       fontSize: this.params.fontSize,
-      fontFamily: this.params.fontFamily,
+      fontFamily: "SJetBrainsMono, SSourceHanCodeJP",
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
     // テキスト検査用のテキスト

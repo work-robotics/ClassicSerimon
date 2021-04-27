@@ -18,6 +18,7 @@ import ConfigStore from "./ConfigStore";
 import CustomStyle from "./CustomStyle";
 import path from "path";
 import dateFormat from "dateformat";
+const FontFaceObserver = require("fontfaceobserver");
 
 const ContainerStyleBase: React.CSSProperties = { paddingLeft: 0, paddingRight: 0 };
 
@@ -86,6 +87,7 @@ const Monitor: React.FC = () => {
   const { state: deviceStatus, setState: setDeviceStatus } = useContext(DeviceStatusContext);
   const canvasViewerRef = useRef<CanvasViewerRef>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [isFontLoaded, setIsFontLoaded] = useState<boolean>(false);
   const [openSettingWindow, setOpenSettingWindow] = useState<boolean>(false);
   const [openSaveWindow, setOpenSaveWindow] = useState<boolean>(false);
   const [changeColorMode, setChangeColorMode] = useState<boolean>();
@@ -95,6 +97,11 @@ const Monitor: React.FC = () => {
   useEffect(() => {
     ConfigStore.userStore.onDidChange("darkMode", (data: boolean) => {
       setChangeColorMode(data);
+    });
+    var fontA = new FontFaceObserver("SJetBrainsMono");
+    var fontB = new FontFaceObserver("SSourceHanCodeJP");
+    Promise.all([fontA.load(), fontB.load()]).then(() => {
+      setIsFontLoaded(true);
     });
   }, []);
 
@@ -217,69 +224,73 @@ const Monitor: React.FC = () => {
       });
   }
 
-  return (
-    <>
-      <Container fluid style={ContainerStyleBase} className={ContainerStyle}>
-        <Row noGutters={true} className={HeaderStyle}>
-          <Col className={LeftMenu}>
-            {isConnected && (
-              <Button variant="dark" onClick={startBottonHandler}>
-                <FontAwesomeIcon
-                  icon={faPlug}
-                  className={css`
-                    color: #fd9a9a;
-                  `}
-                />{" "}
-                {" Stop"}
+  if (isFontLoaded) {
+    return (
+      <>
+        <Container fluid style={ContainerStyleBase} className={ContainerStyle}>
+          <Row noGutters={true} className={HeaderStyle}>
+            <Col className={LeftMenu}>
+              {isConnected && (
+                <Button variant="dark" onClick={startBottonHandler}>
+                  <FontAwesomeIcon
+                    icon={faPlug}
+                    className={css`
+                      color: #fd9a9a;
+                    `}
+                  />{" "}
+                  {" Stop"}
+                </Button>
+              )}
+              {!isConnected && (
+                <Button variant="dark" onClick={startBottonHandler}>
+                  <FontAwesomeIcon
+                    icon={faPlug}
+                    className={css`
+                      color: #ffffff;
+                    `}
+                  />{" "}
+                  {" Start"}
+                </Button>
+              )}
+            </Col>
+            <Col className={RightMenu}>
+              <Button variant="dark" onClick={settingBottonHandler}>
+                <FontAwesomeIcon icon={faCog} />
+                {" Open Setting"}
+              </Button>{" "}
+              <Button variant="dark" onClick={saveBottonHandler}>
+                <FontAwesomeIcon icon={faSave} /> {" Save"}
+              </Button>{" "}
+              <Button variant="dark" onClick={clearBottonHandler}>
+                <FontAwesomeIcon icon={faSave} /> {" Clear"}
               </Button>
-            )}
-            {!isConnected && (
-              <Button variant="dark" onClick={startBottonHandler}>
-                <FontAwesomeIcon
-                  icon={faPlug}
-                  className={css`
-                    color: #ffffff;
-                  `}
-                />{" "}
-                {" Start"}
-              </Button>
-            )}
-          </Col>
-          <Col className={RightMenu}>
-            <Button variant="dark" onClick={settingBottonHandler}>
-              <FontAwesomeIcon icon={faCog} />
-              {" Open Setting"}
-            </Button>{" "}
-            <Button variant="dark" onClick={saveBottonHandler}>
-              <FontAwesomeIcon icon={faSave} /> {" Save"}
-            </Button>{" "}
-            <Button variant="dark" onClick={clearBottonHandler}>
-              <FontAwesomeIcon icon={faSave} /> {" Clear"}
-            </Button>
-          </Col>
-        </Row>
-        <Row noGutters={true} className={ContentStyle}>
-          <ReactCanvasViewer ref={canvasViewerRef} />
-        </Row>
-        <Row noGutters={true} className={FooterStyle}>
-          <div className={StatusRightLogo}>
-            <a href="https://work-robotics.co.jp/" target="_blank">
-              <img src={"./Images/wrlogo.png"} height={8} alt="" />
-            </a>
-          </div>
-          <Col className={StatusRightMenu}>
-            <MeasureStatus />
-          </Col>
-          <Col className={StatusLeftMenu}>
-            <DeviceSelector />
-            <BaudrateSelector />
-          </Col>
-        </Row>
-      </Container>
-      <ConfigPanel show={openSettingWindow} setShow={setOpenSettingWindow} />
-      <SavePanel show={openSaveWindow} setShow={setOpenSaveWindow} saveRequest={saveHandler} />
-    </>
-  );
+            </Col>
+          </Row>
+          <Row noGutters={true} className={ContentStyle}>
+            <ReactCanvasViewer ref={canvasViewerRef} />
+          </Row>
+          <Row noGutters={true} className={FooterStyle}>
+            <div className={StatusRightLogo}>
+              <a href="https://work-robotics.co.jp/" target="_blank">
+                <img src={"./Images/wrlogo.png"} height={8} alt="" />
+              </a>
+            </div>
+            <Col className={StatusRightMenu}>
+              <MeasureStatus />
+            </Col>
+            <Col className={StatusLeftMenu}>
+              <DeviceSelector />
+              <BaudrateSelector />
+            </Col>
+          </Row>
+        </Container>
+        <ConfigPanel show={openSettingWindow} setShow={setOpenSettingWindow} />
+        <SavePanel show={openSaveWindow} setShow={setOpenSaveWindow} saveRequest={saveHandler} />
+      </>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default Monitor;

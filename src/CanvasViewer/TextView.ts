@@ -133,7 +133,7 @@ class TextView {
     this.textConfig = {
       fontSize: this.params.fontSize,
       fontStyle: "500",
-      fontFamily: this.params.fontFamily,
+      fontFamily: "SJetBrainsMono, SSourceHanCodeJP",
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
 
