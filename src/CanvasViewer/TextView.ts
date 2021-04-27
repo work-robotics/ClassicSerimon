@@ -107,6 +107,12 @@ class TextView {
       height: this.mainStage.height(),
     });
 
+    if (this.params.userConfig.asciiMode) {
+      this.params.topNumberHeight = 0;
+    } else {
+      this.params.topNumberHeight = 30;
+    }
+
     // 列番号の背景
     this.textTopBackground = new Konva.Rect({
       fill: CanvasColor.textTopBackground,
@@ -165,8 +171,10 @@ class TextView {
 
     if (this.params.userConfig.asciiMode) {
       this.textTopNumContent.visible(false);
+      // this.textTopBackground.visible(false);
     } else {
       this.textTopNumContent.visible(true);
+      // this.textTopBackground.visible(true);
       this.textBorder.visible(false);
     }
 
