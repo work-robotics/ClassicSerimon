@@ -18,15 +18,15 @@ function createWindow() {
     minWidth: 800,
     useContentSize: true,
     resizable: true,
-    webPreferences: { 
-      nodeIntegration: true, 
-      enableRemoteModule: true
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
   // window.webContents.openDevTools();
   window.loadFile("dist/contents/index.html");
 
-  var isDev = process.env.APP_DEV ? process.env.APP_DEV.trim() == "true" : false;
+  var isDev = process.env.NODE_ENV ? process.env.NODE_ENV.trim() == "development" : false;
   if (isDev) {
     client.create(window);
   }
