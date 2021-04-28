@@ -187,7 +187,7 @@ const Monitor: React.FC = () => {
         if (!result.canceled) {
           const fd = fs.openSync(path.join(result.filePaths[0], filename), "w");
           // メタ情報の追加
-          fs.writeSync(fd, "VERSION:0.0.1\n");
+          fs.writeSync(fd, "VERSION:" + process.env.npm_package_version + "\n");
           fs.writeSync(fd, "SAVE_TIMESTAMP:" + saveTimeStamp.getTime() + "\n");
           const firstReceivedDate = canvasViewerRef.current.getCanvasViewer().getFirstReceivedDate();
           if (firstReceivedDate != undefined) {
