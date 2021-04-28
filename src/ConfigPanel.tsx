@@ -58,11 +58,15 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
           setShow={props.setShow}
           title={"環境設定"}
           content={
-            <Form schema={schema} onSubmit={submitBottonEvent}>
-              <Button type="submit" variant="dark">
-                Apply
-              </Button>
-            </Form>
+            <>
+              <Form schema={schema} onSubmit={submitBottonEvent}>
+                <Button type="submit" variant="dark">
+                  Apply
+                </Button>
+              </Form>
+              <hr />
+              {"Version: " + process.env.npm_package_version}
+            </>
           }
         />
       </>
