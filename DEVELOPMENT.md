@@ -68,5 +68,6 @@ $ yarn install
 
 ```bash
 # build and release
+$ yarn build
 $ yarn dist
 ```
