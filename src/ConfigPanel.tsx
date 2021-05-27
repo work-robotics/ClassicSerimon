@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { UserConfig } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 import ModalWindow from "./ModalWindow";
+import { remote } from "electron";
 
 export type ConfigPanelProps = {
   show: boolean;
@@ -65,7 +66,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
                 </Button>
               </Form>
               <hr />
-              {"Version: " + process.env.npm_package_version}
+              {"Version: " + remote.app.getVersion()}
             </>
           }
         />
