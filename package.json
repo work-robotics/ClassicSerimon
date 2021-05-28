@@ -18,7 +18,7 @@
     "dist": "electron-builder",
     "rebuild:app-debs": "electron-builder install-app-deps",
     "postinstall": "npm run --silent rebuild:app-debs",
-    "genrate_licence": "ts-node generate_licence/run.ts"
+    "build:docs": "ts-node generate_licence/run.ts"
   },
   "author": "WorkRobotics",
   "license": "ISC",
