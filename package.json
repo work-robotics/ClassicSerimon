@@ -17,11 +17,13 @@
     "dist:linux": "electron-builder --linux --x64",
     "dist": "electron-builder",
     "rebuild:app-debs": "electron-builder install-app-deps",
-    "postinstall": "npm run --silent rebuild:app-debs"
+    "postinstall": "npm run --silent rebuild:app-debs",
+    "genrate_licence": "ts-node generate_licence/run.ts"
   },
   "author": "WorkRobotics",
   "license": "ISC",
   "devDependencies": {
+    "@types/license-checker": "^25.0.1",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.55",
     "@types/react-dom": "^16.9.9",
@@ -29,9 +31,11 @@
     "electron": "^10.1.5",
     "electron-builder": "^22.10.5",
     "gulp": "^4.0.2",
+    "license-checker": "^25.0.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.7",
+    "ts-node": "^10.0.0",
     "typescript": "^4.0.5",
     "webpack": "^5.3.2",
     "webpack-cli": "^4.1.0",
