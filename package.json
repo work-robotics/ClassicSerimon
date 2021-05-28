@@ -1,6 +1,6 @@
 {
   "name": "serimon",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Serimon, a Simple Serial Monitor Application",
   "main": "dist/main.js",
   "scripts": {
