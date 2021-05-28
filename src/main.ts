@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { client } from "electron-connect";
 const contextMenu = require("electron-context-menu");
+const Store = require("electron-store");
 
 contextMenu({
   prepend: (params, browserWindow) => [
@@ -11,10 +12,11 @@ contextMenu({
 });
 
 function createWindow() {
+  Store.initRenderer();
   const window = new BrowserWindow({
     width: 800,
-    height: 500,
-    minHeight: 500,
+    height: 515,
+    minHeight: 515,
     minWidth: 800,
     useContentSize: true,
     resizable: true,
@@ -24,6 +26,7 @@ function createWindow() {
     },
   });
   // window.webContents.openDevTools();
+  window.setMenu(null);
   window.loadFile("dist/contents/index.html");
 
   var isDev = process.env.NODE_ENV ? process.env.NODE_ENV.trim() == "development" : false;

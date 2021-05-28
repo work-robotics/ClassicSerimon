@@ -1,25 +1,38 @@
+import { Cookies } from "electron";
 import Konva from "konva";
-import Params, { ViewState } from "./Params";
+import Params from "./Params";
+import State from "./State";
+import Common from "./Common";
+import CanvasColor from "./CanvasColor";
 
 class TextView {
   private params: Params;
-  private state: ViewState;
+  private state: State;
+  private common: Common;
   private mainStage: Konva.Stage;
 
   /* テキスト */
   private textLayer: Konva.Layer | undefined;
-  private textBackground: Konva.Rect | undefined;
   private textConfig: Konva.TextConfig | undefined;
+
   private textDataContent: Konva.Text;
+
+  private textLineBackground: Konva.Rect | undefined;
   private textLineNumContent: Konva.Text;
-  private tempText: Konva.Text | undefined;
+
+  private textTopBackground: Konva.Rect | undefined;
+  private textTopNumContent: Konva.Text;
+
+  private textBorder: Konva.Rect | undefined;
+
   private updateTextLayerTicking: boolean;
 
-  constructor(stage: Konva.Stage, params: Params, state: ViewState) {
-    // 親のViewからStageとParam,ViewStateの参照を受け取る
+  constructor(stage: Konva.Stage, params: Params, state: State, common: Common) {
+    // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;
+    this.common = common;
 
     // フレーム制御のためのフラグ初期化
     this.updateTextLayerTicking = false;
@@ -29,11 +42,6 @@ class TextView {
 
     // レイヤーの初期化
     this.initLayer();
-  }
-
-  public getTextWidth(data: string): number {
-    this.tempText.text(data);
-    return this.tempText.getTextWidth();
   }
 
   public calcMouseOverIndex() {
@@ -47,13 +55,14 @@ class TextView {
     );
 
     // カーソル上の列番号を算出
-    this.state.mouseOverIndex.x = this.getColumnPosition(
-      this.state.rowTopIndex + this.state.mouseOverIndex.y,
-      this.state.mousePosition.x
-    );
+    this.state.mouseOverIndex.x = this.getColumnPosition(this.state.mouseOverIndex.y, this.state.mousePosition.x);
+    this.state.mouseOverPastIndex.y = this.state.mouseOverIndex.y;
   }
 
   public getColumnPosition(targetRow: number, x: number): number {
+    if (targetRow >= this.state.viewTextDatas.length) {
+      return 0;
+    }
     // オフセットの余白サイズを考慮したX座標を計算
     const offsetedX = x - this.params.lineNumbersWidth - this.params.paddingLineNumbersRight;
     // offsetedXがマイナスの場合（左にはみ出した状態）
@@ -62,8 +71,16 @@ class TextView {
     }
     // 左から探索してヒットした場所を返す
     let sum = 0;
-    for (let index = 0; index < this.state.renderDatas[targetRow].length; index++) {
-      const buf = this.state.renderDatasWidth[targetRow][index] / 2;
+
+    if (this.state.mouseOverPastIndex.y != this.state.mouseOverIndex.y) {
+      this.state.renderDataWidth = [];
+      for (var i = 0; i < this.state.viewTextDatas[targetRow].length; i++) {
+        this.state.renderDataWidth.push(this.common.getTextWidth(this.state.viewTextDatas[targetRow][i]));
+      }
+    }
+
+    for (let index = 0; index < this.state.viewTextDatas[targetRow].length; index++) {
+      const buf = this.state.renderDataWidth[index] / 2;
       sum += buf;
       if (sum > offsetedX) {
         return index;
@@ -71,11 +88,12 @@ class TextView {
       sum += buf;
     }
     // ヒットしなかった場合は最大値を返す
-    return this.state.renderDatas[targetRow].length;
+    return this.state.viewTextDatas[targetRow].length;
   }
 
   // レイヤー初期化関数
-  private initLayer(): void {
+  public initLayer(): void {
+    Konva.pixelRatio = 2.0;
     this.textLayer = new Konva.Layer();
 
     // インデックスの初期化
@@ -83,25 +101,46 @@ class TextView {
     this.state.rowBottomIndex = 0;
 
     // 行番号の背景
-    this.textBackground = new Konva.Rect({
-      fill: "#424242",
+    this.textLineBackground = new Konva.Rect({
+      fill: CanvasColor.textLineBackground,
       width: this.params.lineNumbersWidth,
       height: this.mainStage.height(),
+    });
+
+    if (this.params.userConfig.asciiMode) {
+      this.params.topNumberHeight = 0;
+    } else {
+      this.params.topNumberHeight = 30;
+    }
+
+    // 列番号の背景
+    this.textTopBackground = new Konva.Rect({
+      fill: CanvasColor.textTopBackground,
+      width: this.mainStage.width(),
+      height: this.params.topNumberHeight,
+    });
+
+    // ボーダの背景
+    this.textBorder = new Konva.Rect({
+      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight + this.params.userConfig.asciiMaxWidth + 20,
+      y: this.params.paddingCanvasTop,
+      fill: CanvasColor.textBorder,
+      width: 2,
+      height: 0,
     });
 
     // テキストの共通設定
     this.textConfig = {
       fontSize: this.params.fontSize,
-      fontFamily: this.params.fontFamily,
+      fontStyle: "500",
+      fontFamily: "SJetBrainsMono, SSourceHanCodeJP",
       lineHeight: this.params.rowHeight / this.params.fontSize,
     };
-
-    // テキスト検査用のテキスト
-    this.tempText = new Konva.Text({ ...this.textConfig });
 
     // データ表示のテキスト
     this.textDataContent = new Konva.Text({
       ...this.textConfig,
+      fill: CanvasColor.textDataContent,
       x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight,
       y: this.params.paddingCanvasTop,
     });
@@ -110,14 +149,41 @@ class TextView {
     this.textLineNumContent = new Konva.Text({
       ...this.textConfig,
       y: this.params.paddingCanvasTop,
-      fill: "#FFF",
+      fill: CanvasColor.textLineNumContent,
       align: "center",
       width: this.params.lineNumbersWidth,
     });
 
+    // 列番号のテキスト
+    this.textTopNumContent = new Konva.Text({
+      ...this.textConfig,
+      x: this.params.lineNumbersWidth + this.params.paddingLineNumbersRight,
+      y: this.params.rowHeight / 3,
+      fill: CanvasColor.textTopNumContent,
+      width: this.mainStage.width(),
+    });
+
+    let newTextTopNumContent = "";
+    for (let i = 0; i < this.params.maxLineNum; i++) {
+      newTextTopNumContent += ("00" + (i + 1).toString()).substr(-2) + " ";
+    }
+    this.textTopNumContent.text(newTextTopNumContent);
+
+    if (this.params.userConfig.asciiMode) {
+      this.textTopNumContent.visible(false);
+      // this.textTopBackground.visible(false);
+    } else {
+      this.textTopNumContent.visible(true);
+      // this.textTopBackground.visible(true);
+      this.textBorder.visible(false);
+    }
+
     // レイヤに追加
-    this.textLayer.add(this.textBackground);
+    this.textLayer.add(this.textTopBackground);
+    this.textLayer.add(this.textTopNumContent);
+    this.textLayer.add(this.textLineBackground);
     this.textLayer.add(this.textLineNumContent);
+    this.textLayer.add(this.textBorder);
     this.textLayer.add(this.textDataContent);
     this.mainStage.add(this.textLayer);
   }
@@ -133,28 +199,106 @@ class TextView {
     this.updateTextLayerTicking = true;
   }
 
-  private updateContents() {
+  public updateContents() {
     // 行番号の背景の再設定
-    this.textBackground.height(this.mainStage.height());
+    this.textLineBackground.height(this.mainStage.height());
+    this.textBorder.height(this.mainStage.height() - 40);
+    if (this.state.isVisibleScroolBar) {
+      this.textTopBackground.width(this.mainStage.width() - 20);
+      this.textTopNumContent.width(this.mainStage.width() - 20);
+    } else {
+      this.textTopBackground.width(this.mainStage.width());
+      this.textTopNumContent.width(this.mainStage.width());
+    }
+
     // 画面の高さなどから最大行数を計算
     this.state.rowNumber = Math.floor((this.mainStage.height() - this.params.paddingCanvasTop) / this.params.rowHeight);
 
     // データ数からインデックスの位置を再計算
-    if (this.state.renderDatas.length < this.state.rowNumber) {
+    let rawDatasSize = 0;
+    if (this.params.userConfig.asciiMode) {
+      rawDatasSize = this.state.enterPoint.size();
+    } else {
+      rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
+    }
+    if (rawDatasSize < this.state.rowNumber) {
       this.state.rowTopIndex = 0;
-      this.state.rowBottomIndex = this.state.renderDatas.length;
+      this.state.rowBottomIndex = rawDatasSize;
     } else {
       this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
     }
 
-    let newTextDataContent = "";
     let newTextLineNumContent = "";
-    this.state.renderDatas.slice(this.state.rowTopIndex, this.state.rowBottomIndex).forEach((data, index) => {
-      newTextDataContent += data + "\n";
-      newTextLineNumContent += ("0000000000" + (index + this.state.rowTopIndex)).slice(-8) + "\n";
-    });
-    this.textDataContent.text(newTextDataContent);
+    this.state.viewTextDatas = [];
+    let counter = 0;
+    if (this.params.userConfig.asciiMode) {
+      let render_datas = [];
+      // データを一時的に取り出す
+      while (1) {
+        if (counter == this.state.rowNumber) {
+          break;
+        }
+        // 範囲データを取り出す
+        const area = this.state.enterPoint.slice(
+          counter + this.state.rowTopIndex,
+          counter + this.state.rowTopIndex + 2
+        );
+        // データが有効な場合は処理を継続
+        if (area.length == 2) {
+          const rawData = this.state.rawDatas.slice(area[0], area[1]);
+          this.common.formCopyData(rawData);
+          render_datas.push(this.asciiFormatStr(rawData));
+        } else if (area.length == 1) {
+          const rawData = this.state.rawDatas.slice(area[0], this.state.rawDatas.size());
+          this.common.formCopyData(rawData);
+          render_datas.push(this.asciiFormatStr(rawData));
+          break;
+        } else {
+          break;
+        }
+        counter++;
+      }
+      for (let i = 0; i < render_datas.length; i++) {
+        this.state.viewTextDatas.push("");
+        newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
+        for (const strs of render_datas[i]) {
+          for (const s of strs) {
+            if (s != "\n") this.state.viewTextDatas[i] += s;
+          }
+        }
+        this.state.viewTextDatas.push("");
+      }
+    } else {
+      for (var i = 0; i < this.state.rowNumber; i++) {
+        this.state.viewTextDatas.push("");
+        for (const strs of this.binaryFormatStr(
+          this.state.rawDatas.slice(
+            (this.state.rowTopIndex + i) * this.params.maxLineNum,
+            (this.state.rowTopIndex + i + 1) * this.params.maxLineNum
+          )
+        )) {
+          for (const s of strs) {
+            this.state.viewTextDatas[i] += s;
+          }
+        }
+        newTextLineNumContent += ("0000000000" + (i + 1 + this.state.rowTopIndex)).slice(-8) + "\n";
+      }
+    }
+    this.textDataContent.text(this.state.viewTextDatas.join("\n"));
     this.textLineNumContent.text(newTextLineNumContent);
+  }
+
+  public binaryFormatStr(data: number[], addSpace: boolean = true): string {
+    let content = "";
+    for (let i in data) {
+      content += ("00" + data[i].toString(16).toUpperCase()).substr(-2);
+      if (addSpace && parseInt(i) != data.length - 1) content += " ";
+    }
+    return content;
+  }
+
+  public asciiFormatStr(data: number[], addSpace: boolean = true): string {
+    return new TextDecoder("utf8").decode(Uint8Array.of(...data));
   }
 }
 
