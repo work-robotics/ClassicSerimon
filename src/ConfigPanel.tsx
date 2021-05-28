@@ -6,6 +6,7 @@ import { UserConfig } from "./CanvasViewer/Types";
 import ConfigStore from "./ConfigStore";
 import ModalWindow from "./ModalWindow";
 import { remote } from "electron";
+import { css } from "emotion";
 
 export type ConfigPanelProps = {
   show: boolean;
@@ -57,7 +58,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
         <ModalWindow
           show={props.show}
           setShow={props.setShow}
-          title={"環境設定"}
+          title={"環境設定（" + "Version: " + remote.app.getVersion() + "）"}
           content={
             <>
               <Form schema={schema} onSubmit={submitBottonEvent}>
@@ -66,7 +67,19 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
                 </Button>
               </Form>
               <hr />
-              {"Version: " + remote.app.getVersion()}
+              <a
+                href="#"
+                className={css`
+                  :hover {
+                    text-decoration: none;
+                  }
+                `}
+                onClick={() => {
+                  window.open("licence.html", "");
+                }}
+              >
+                ライセンスの表示
+              </a>
             </>
           }
         />
