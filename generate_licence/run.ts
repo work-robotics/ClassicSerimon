@@ -2,8 +2,7 @@ import path from "path";
 import checker from "license-checker";
 import fs from "fs";
 
-console.log(path.dirname(__dirname));
-checker.init({ start: path.dirname(__dirname), production: true, json: true }, (err, packages) => {
+checker.init({ start: path.dirname(__dirname), production: true }, (err, packages) => {
   if (err) {
     console.log(err);
   } else {
@@ -20,7 +19,6 @@ checker.init({ start: path.dirname(__dirname), production: true, json: true }, (
     content += "<h1>使用ライブラリ一覧</h1>";
     content += "この一覧は、Serimonに含まれるオープンソースソフトウェア（OSS）のライセンスを記載したものです。";
     content += "<hr/>";
-    console.log();
 
     for (const key in packages) {
       // 自分自身は除外
@@ -31,7 +29,11 @@ checker.init({ start: path.dirname(__dirname), production: true, json: true }, (
       content += "<h2>" + key + "</h2>";
       content += "<pre>";
       content += "<code>";
-      content += fs.readFileSync(packages[key].licenseFile);
+      if (path.basename(packages[key].licenseFile).indexOf("README") != -1) {
+        content += "Licence:" + packages[key].licenses + "\n";
+      } else {
+        content += fs.readFileSync(packages[key].licenseFile);
+      }
       content += "</code>";
       content += "</pre>";
       content += "<hr/>";
