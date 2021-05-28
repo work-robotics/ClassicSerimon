@@ -32,7 +32,7 @@ Visual Studio Code を利用する場合は、以下の拡張機能をインス�
 
 #### 2-1-1. 依存関係を構築する
 
-Windows, macOS, Linux 共通で以下のコマンドを実行します。
+以下のコマンドを実行し、依存パッケージをインストールします。
 
 ```bash
 # install dependencies
@@ -55,7 +55,7 @@ $ yarn dev
 
 #### 2-2-1. 依存関係を構築する
 
-Windows, macOS, Linux 共通で以下のコマンドを実行します。
+以下のコマンドを実行し、依存パッケージをインストールします。
 
 ```bash
 # install dependencies
@@ -64,7 +64,7 @@ $ yarn install
 
 #### 2-2-2. プログラムを実行する
 
-以下のコマンドを実行すると、バイナリをreleaseディレクトリ（フォルダ）書き出します。
+以下のコマンドを実行すると、バイナリをreleaseディレクトリ（フォルダ）に書き出します。
 
 ```bash
 # build and release
