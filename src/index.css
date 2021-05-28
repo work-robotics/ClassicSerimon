@@ -1,9 +1,35 @@
+@font-face {
+  font-family: "SJetBrainsMono";
+  src: url(./Fonts/JetBrainsMono-Bold.ttf) format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "SJetBrainsMono";
+  src: url(./Fonts/JetBrainsMono-Bold.ttf) format("truetype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "SSourceHanCodeJP";
+  src: url(./Fonts/SourceHanCodeJP-Medium.otf) format("opentype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "SSourceHanCodeJP";
+  src: url(./Fonts/SourceHanCodeJP-Bold.otf) format("opentype");
+  font-weight: bold;
+}
+
 body {
   margin: 0;
   background-color: #3b3b3b;
   color: #ffffff;
   font-size: 40px;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 
 :focus {

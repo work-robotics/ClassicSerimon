@@ -1,9 +1,13 @@
 import Konva from "konva";
-import Params, { ViewState } from "./Params";
+import Params from "./Params";
+import State from "./State";
+import Common from "./Common";
+import CanvasColor from "./CanvasColor";
 
 class ScrollView {
   private params: Params;
-  private state: ViewState;
+  private state: State;
+  private common: Common;
   private mainStage: Konva.Stage;
 
   /* スクロール */
@@ -12,7 +16,6 @@ class ScrollView {
   private scrollBarBackground: Konva.Rect | undefined;
   private updateScrollLayerTicking: boolean;
   private scrollTimer: NodeJS.Timeout | undefined;
-  private scrollMode: boolean;
   private updateHandler: () => void;
   private updateDragHandler: () => void;
   private mouseEnterHandler: () => void;
@@ -21,16 +24,18 @@ class ScrollView {
   constructor(
     stage: Konva.Stage,
     params: Params,
-    state: ViewState,
+    state: State,
+    common: Common,
     updateHandler: () => void,
     updateDragHandler: () => void,
     mouseEnterHandler: () => void = () => {},
     mouseLeaveHandler: () => void = () => {}
   ) {
-    // 親のViewからStageとParam,ViewStateの参照を受け取る
+    // 親のViewからStageとParam,Stateの参照を受け取る
     this.mainStage = stage;
     this.params = params;
     this.state = state;
+    this.common = common;
     this.updateHandler = updateHandler;
     this.updateDragHandler = updateDragHandler;
     this.mouseEnterHandler = mouseEnterHandler;
@@ -44,7 +49,7 @@ class ScrollView {
   }
 
   // レイヤーの初期化関数
-  private initLayer(): void {
+  public initLayer(): void {
     this.scrollLayer = new Konva.Layer();
     // スクロールバーの共通設定
     const BarConfig: Konva.RectConfig = {
@@ -53,13 +58,13 @@ class ScrollView {
     };
 
     // スクロールバーの背景
-    this.scrollBarBackground = new Konva.Rect({ ...BarConfig, fill: "#CCC" });
+    this.scrollBarBackground = new Konva.Rect({ ...BarConfig, fill: CanvasColor.scrollBarBackground });
 
     // スクロールバー
     this.scrollBar = new Konva.Rect({
       ...BarConfig,
       height: 20,
-      fill: "#333",
+      fill: CanvasColor.scrollBar,
       draggable: true,
       dragBoundFunc: this.scrollBarDragEvent.bind(this),
     });
@@ -78,31 +83,41 @@ class ScrollView {
 
   public updateContents() {
     // スクロールバーの表示設定
-    if (this.state.renderDatas.length < this.state.rowNumber) {
+    let rawDatasSize = 0;
+    if (this.params.userConfig.asciiMode) {
+      rawDatasSize = this.state.enterPoint.size();
+    } else {
+      rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
+    }
+
+    if (rawDatasSize < this.state.rowNumber) {
       // スクロールバーを非表示に設定
       this.scrollBarBackground.visible(false);
       this.scrollBar.visible(false);
+      this.state.isVisibleScroolBar = false;
     } else {
-      if(!this.scrollBar.visible()){
-        this.scrollMode = true;
+      if (!this.scrollBar.visible()) {
+        this.state.enableAutoScroll = true;
       }
       // スクロールバーの表示を有効
       this.scrollBarBackground.visible(true);
       this.scrollBar.visible(true);
+      this.state.isVisibleScroolBar = true;
 
       // scrollHeightを更新
       this.state.scrollHeight = Math.ceil(
-        (this.state.renderDatas.length - this.state.rowNumber) * this.params.rowHeight +
+        (rawDatasSize - this.state.rowNumber) * this.params.rowHeight +
           this.mainStage.height() -
           this.params.paddingCanvasTop
       );
 
       // scrollTopを更新
-      if(this.scrollMode){
+      if (this.state.enableAutoScroll) {
         this.state.scrollTop = this.state.scrollHeight - this.mainStage.height();
-      }else{
+      } else {
         this.state.scrollTop = Math.ceil(
-          Math.max(Math.min(this.state.scrollTop, this.state.scrollHeight - this.mainStage.height()), 0));
+          Math.max(Math.min(this.state.scrollTop, this.state.scrollHeight - this.mainStage.height()), 0)
+        );
       }
 
       // スクロールバー背景の更新
@@ -116,14 +131,19 @@ class ScrollView {
       const a = this.state.scrollHeight - this.mainStage.height();
       const b = this.state.scrollTop * (this.mainStage.height() - this.scrollBar.height());
       this.scrollBar.x(this.mainStage.width() - this.scrollBar.width());
-      this.scrollBar.y(b / a);
+      const y_pos = b / a;
+      if (isNaN(y_pos)) {
+        this.scrollBar.y(0);
+      } else {
+        this.scrollBar.y(y_pos);
+      }
     }
 
     // rowTopIndex, rowBottomIndexの算出(スクロールが必要な状況でのみ)
-    if (this.state.renderDatas.length > this.state.rowNumber) {
+    if (rawDatasSize > this.state.rowNumber) {
       if (this.state.scrollHeight - this.mainStage.height() == this.state.scrollTop) {
-        this.state.rowTopIndex = this.state.renderDatas.length - this.state.rowNumber;
-        this.state.rowBottomIndex = this.state.renderDatas.length;
+        this.state.rowTopIndex = rawDatasSize - this.state.rowNumber;
+        this.state.rowBottomIndex = rawDatasSize;
       } else {
         this.state.rowTopIndex = Math.ceil(this.state.scrollTop / this.params.rowHeight);
         this.state.rowBottomIndex = this.state.rowTopIndex + this.state.rowNumber;
@@ -141,18 +161,24 @@ class ScrollView {
     pos.y = Math.max(Math.min(pos.y, this.mainStage.height() - this.scrollBar.height()), 0);
     pos.x = this.mainStage.width() - this.scrollBar.width();
     this.updateLayer();
-    this.scrollMode = pos.y == this.mainStage.height() - this.scrollBar.height();
+    this.state.enableAutoScroll = pos.y == this.mainStage.height() - this.scrollBar.height();
     return pos;
   }
 
   public updateLayer(moveLastLine: boolean = false): void {
+    let rawDatasSize = 0;
+    if (this.params.userConfig.asciiMode) {
+      rawDatasSize = this.state.enterPoint.size();
+    } else {
+      rawDatasSize = Math.ceil(this.state.rawDatas.size() / this.params.maxLineNum);
+    }
     if (this.updateScrollLayerTicking == false) {
       requestAnimationFrame(() => {
         // moveLastLineが有効な場合、scrollTopを最後尾に移動
         if (moveLastLine == true) {
           // scrollTopを先最後尾に持っていくにはscrollHeightを先に計算する必要がある
           this.state.scrollHeight = Math.ceil(
-            (this.state.renderDatas.length - this.state.rowNumber) * this.params.rowHeight +
+            (rawDatasSize - this.state.rowNumber) * this.params.rowHeight +
               this.mainStage.height() -
               this.params.paddingCanvasTop
           );
@@ -180,6 +206,7 @@ class ScrollView {
       if (this.scrollTimer == undefined) {
         this.scrollTimer = setInterval(() => {
           this.state.scrollTop -= Math.abs(this.state.mousePosition.y) * 0.1;
+          this.state.enableAutoScroll = false;
           this.updateDragHandler();
         }, 1);
       }
@@ -187,6 +214,7 @@ class ScrollView {
       if (this.scrollTimer == undefined) {
         this.scrollTimer = setInterval(() => {
           this.state.scrollTop += 0.1 * (this.state.mousePosition.y - this.params.rowHeight * this.state.rowNumber);
+          this.state.enableAutoScroll = this.state.scrollHeight - this.mainStage.height() < this.state.scrollTop;
           this.updateDragHandler();
         }, 1);
       }

@@ -3,6 +3,7 @@ import { useInterval } from "react-timing-hooks";
 import { DeviceStatusContext } from "./TotalProvider";
 import { css } from "emotion";
 import SerialPort from "serialport";
+import Selector from "./Selector";
 
 const DeviceSelector: React.FC = () => {
   console.log("[Run] DeviceSelector");
@@ -37,14 +38,6 @@ const DeviceSelector: React.FC = () => {
     setDeviceStatus({ selectedDevice: event.target.value });
   }
 
-  const Style = css`
-    font-size: 16px;
-    color: #3d3d3d;
-    background-color: #f1f1f1;
-    height: 100%;
-    width: 200px;
-  `;
-
   const contents = deviceList.map((data, index) => (
     <option key={index} value={data}>
       {" "}
@@ -53,9 +46,7 @@ const DeviceSelector: React.FC = () => {
   ));
   return (
     <>
-      <select className={Style} onChange={onChange} value={deviceStatus.selectedDevice}>
-        {contents}
-      </select>
+      <Selector width={"200px"} onChange={onChange} value={deviceStatus.selectedDevice} content={contents} />
     </>
   );
 };
