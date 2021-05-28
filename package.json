@@ -15,7 +15,7 @@
     "dist:mac": "electron-builder --mac --x64",
     "dist:win": "electron-builder --win --x64",
     "dist:linux": "electron-builder --linux --x64",
-    "dist": "electron-builder",
+    "dist": "run-s build:docs && electron-builder",
     "rebuild:app-debs": "electron-builder install-app-deps",
     "postinstall": "npm run --silent rebuild:app-debs",
     "build:docs": "ts-node generate_licence/run.ts"
