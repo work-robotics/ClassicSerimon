@@ -16,7 +16,7 @@ checker.init({ start: path.dirname(__dirname), production: true }, (err, package
     content += '<link href="./licence.css" rel="stylesheet" type="text/css" />';
     content += "</head>";
     content += "<body>";
-    content += "<h1>使用ライブラリ一覧</h1>";
+    content += "<h1>OSSライセンスに基づく表記</h1>";
     content += "この一覧は、Serimonに含まれるオープンソースソフトウェア（OSS）のライセンスを記載したものです。";
     content += "<hr/>";
 
