@@ -16,7 +16,7 @@ checker.init({ start: path.dirname(__dirname), production: true }, (err, package
     content += '<link href="./licence.css" rel="stylesheet" type="text/css" />';
     content += "</head>";
     content += "<body>";
-    content += "<h1>使用ライブラリ一覧</h1>";
+    content += "<h1>OSSライセンスに基づく表記</h1>";
     content += "この一覧は、Serimonに含まれるオープンソースソフトウェア（OSS）のライセンスを記載したものです。";
     content += "<hr/>";
 
@@ -38,6 +38,25 @@ checker.init({ start: path.dirname(__dirname), production: true }, (err, package
       content += "</pre>";
       content += "<hr/>";
     }
+    // フォントに関するライセンス
+    // JetBrainsMono
+    content += "<h1>" + "フォントに関するライセンス" + "</h1>";
+    content += "本ソフト（Serimon）では表示フォントに以下のフォントを使用しています。";
+    content += "<hr/>";
+    content += "<h2>JetBrains Mono</h2>";
+    content += "<pre>";
+    content += "<code>";
+    content += fs.readFileSync(path.dirname(__dirname) + "/src/Fonts/JetBrainsMono-LICENSE.txt");
+    content += "</code>";
+    content += "</pre>";
+    // SourceHanCodeJP
+    content += "<hr/>";
+    content += "<h2>Source Han Code JP</h2>";
+    content += "<pre>";
+    content += "<code>";
+    content += fs.readFileSync(path.dirname(__dirname) + "/src/Fonts/SourceHanCodeJP-LICENSE.txt");
+    content += "</code>";
+    content += "</pre>";
     content += "</body>";
     content += "</html>";
     fs.writeFileSync("src/licence.html", content);
