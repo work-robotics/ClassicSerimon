@@ -68,7 +68,7 @@ var electron_renderer = {
       patterns: [
         { from: "./src/*.html", to: "[name].[ext]" },
         { from: "./src/*.css", to: "[name].[ext]" },
-        { from: "./src/Images/*.png", to: "Images/[name].[ext]" },
+        { from: "./src/assets/*.png", to: "assets/[name].[ext]" },
         { from: "./src/Fonts/*", to: "./Fonts/[name].[ext]" },
       ],
     }),

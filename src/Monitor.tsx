@@ -272,7 +272,7 @@ const Monitor: React.FC = () => {
           <Row noGutters={true} className={FooterStyle}>
             <div className={StatusRightLogo}>
               <a href="https://work-robotics.co.jp/" target="_blank">
-                <img src={"./Images/wrlogo.png"} height={8} alt="" />
+                <img src={"./assets/wrlogo.png"} height={8} alt="" />
               </a>
             </div>
             <Col className={StatusRightMenu}>
