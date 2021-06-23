@@ -21,7 +21,7 @@
     "build:docs": "ts-node generate_licence/run.ts"
   },
   "author": "WorkRobotics",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/license-checker": "^25.0.1",
     "@types/node": "^12.0.0",
