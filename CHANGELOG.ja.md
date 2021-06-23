@@ -1,13 +1,19 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
-<a name="0.1.1"></a>
-## 0.1.1 - 2021-05-29
+<a name="v0.1.2"></a>
+## [v0.1.2] - 2021-06-08
 
-- 埋め込みフォントのライセンス表記を追加
+- 保存したファイルのバージョン表記がundefinedになる問題を解消 ([#31](https://github.com/work-robotics/Serimon/pull/31))
 
-<a name="0.1.0"></a>
-## 0.1.0 - 2021-05-29
+
+<a name="v0.1.1"></a>
+## [v0.1.1] - 2021-05-29
+
+- 埋め込みフォントのライセンス表記を追加 ([#26](https://github.com/work-robotics/Serimon/pull/26))
+
+<a name="v0.1.0"></a>
+## v0.1.0 - 2021-05-29
 
 - シリアル通信機能
 - 接続するデバイスの一覧表示
@@ -35,5 +41,6 @@
     - 実行ファイルの側に設定ファイルを配置 
 - OSSライセンスページの追加 ([#23](https://github.com/work-robotics/Serimon/pull/23))
 
-[Unreleased]: https://github.com/work-robotics/Serimon/compare/0.1.1...HEAD
-[0.1.1]: https://github.com/work-robotics/Serimon/compare/v0.1.0...0.1.1
+[Unreleased]: https://github.com/work-robotics/Serimon/compare/v0.1.2...HEAD
+[v0.1.2]: https://github.com/work-robotics/Serimon/compare/v0.1.1...v0.1.2
+[v0.1.1]: https://github.com/work-robotics/Serimon/compare/v0.1.0...v0.1.1
