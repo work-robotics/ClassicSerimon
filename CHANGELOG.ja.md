@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+<a name="v0.2.0"></a>
+## [v0.2.0] - 2021-07-01
+
+- Apache-2.0ライセンスの適用 ([#29](https://github.com/work-robotics/Serimon/pull/29))
+
+
 <a name="v0.1.2"></a>
 ## [v0.1.2] - 2021-06-08
 
@@ -41,6 +47,7 @@
     - 実行ファイルの側に設定ファイルを配置 
 - OSSライセンスページの追加 ([#23](https://github.com/work-robotics/Serimon/pull/23))
 
-[Unreleased]: https://github.com/work-robotics/Serimon/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/work-robotics/Serimon/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/work-robotics/Serimon/compare/v0.1.2...v0.2.0
 [v0.1.2]: https://github.com/work-robotics/Serimon/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/work-robotics/Serimon/compare/v0.1.0...v0.1.1
