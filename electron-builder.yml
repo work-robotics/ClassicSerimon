@@ -4,9 +4,10 @@ files:
   - "dist/"
 directories:
   output: release
-buildDependenciesFromSource : true
+buildDependenciesFromSource: true
 win:
-  target: 
+  icon: "src/assets/icon.png"
+  target:
     - target: portable
       arch:
         - x64
