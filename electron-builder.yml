@@ -5,6 +5,8 @@ files:
 directories:
   output: release
 buildDependenciesFromSource: true
+mac:
+  icon: "src/assets/icon.png"
 win:
   icon: "src/assets/icon.png"
   target:
