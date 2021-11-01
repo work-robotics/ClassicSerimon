@@ -13,19 +13,20 @@
 // limitations under the License.
 
 import { Data } from "electron/main";
-import ExtendArray from "./ExtendArray";
+import NumberExtendArray from "./NumberExtendArray";
+import UInt8ExtendArray from "./UInt8ExtendArray";
 
 export class State {
   public rowTopIndex: number;
   public rowBottomIndex: number;
-  public rawDatas: ExtendArray;
+  public rawDatas: UInt8ExtendArray;
   public firstReceivedDate: Date;
   public viewTextDatas: string[];
   public renderDataWidth: number[];
   public scrollHeight: number;
   public scrollTop: number;
   public rowNumber: number;
-  public enterPoint: ExtendArray;
+  public enterPoint: NumberExtendArray;
   public mouseOriginPosition: { x: number; y: number };
   public mousePosition: { x: number; y: number };
   public mouseOverIndex: { x: number; y: number };
@@ -47,7 +48,7 @@ export class State {
   constructor() {
     this.rowTopIndex = 0;
     this.rowBottomIndex = 0;
-    this.rawDatas = new ExtendArray();
+    this.rawDatas = new UInt8ExtendArray();
     this.firstReceivedDate = undefined;
     this.renderDataWidth = [];
     this.scrollHeight = 0;
@@ -64,7 +65,7 @@ export class State {
       origin: { row: -1, column: -1 },
     };
     this.selectDirection = "No";
-    this.enterPoint = new ExtendArray();
+    this.enterPoint = new NumberExtendArray();
     this.enterPoint.append(0);
     this.column_counter = 0;
     this.column_width_sum = 0;

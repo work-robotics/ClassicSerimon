@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export class ExtendArray {
+export class NumberExtendArray {
   private _datas: number[][];
   private _maxSize: number;
   private _areaCounter: number;
 
-  constructor() {
+  constructor(maxSize: number = 10000000) {
     this._datas = [[]];
-    this._maxSize = 10000000;
+    this._maxSize = maxSize;
     this._areaCounter = 0;
   }
 
@@ -64,4 +64,4 @@ export class ExtendArray {
   }
 }
 
-export default ExtendArray;
+export default NumberExtendArray;

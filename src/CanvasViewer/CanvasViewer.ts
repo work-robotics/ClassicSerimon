@@ -16,7 +16,7 @@ import Konva from "konva";
 import Params from "./Params";
 import { UserConfig } from "./Types";
 import State from "./State";
-import ExtendArray from "./ExtendArray";
+import UInt8ExtendArray from "./UInt8ExtendArray";
 
 import Common from "./Common";
 import TextView from "./TextView";
@@ -524,7 +524,7 @@ class CanvasViewer {
   }
 
   // データオブジェクトを取得
-  public getTexts(): ExtendArray {
+  public getTexts(): UInt8ExtendArray {
     return this.state.rawDatas;
   }
 
