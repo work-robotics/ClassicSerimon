@@ -5,12 +5,27 @@ files:
 directories:
   output: release
 buildDependenciesFromSource : true
+extraMetadata:
+  - main: "dist/main.js"
+mac:
+  artifactName: "${productName}-${version}-mac-${arch}.${ext}"
+  category: "public.app-category.productivity"
+  target:
+    - target: dmg
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
 win:
+  artifactName: "${productName}-${version}-win.${ext}"
   target: 
     - target: portable
       arch:
         - x64
 linux:
+  artifactName: "${productName}-${version}-linux-${arch}.${ext}"
+  maintainer: "Work Robotics Co., Ltd."
   target:
     - target: AppImage
       arch:
