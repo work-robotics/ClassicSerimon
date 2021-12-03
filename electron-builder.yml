@@ -1,4 +1,4 @@
-productName: "serimon"
+productName: "Serimon"
 appId: "jp.co.work-robotics.serimon"
 files:
   - "dist/"
