@@ -1,6 +1,13 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+<a name="v0.3.0"></a>
+## [v0.3.0] - 2021-12-03
+
+- ロゴの追加 ([#36](https://github.com/work-robotics/Serimon/pull/36))
+- その他
+    - ビルド結果は専用サーバにアップロード ([#37](https://github.com/work-robotics/Serimon/pull/37))
+
 <a name="v0.2.0"></a>
 ## [v0.2.0] - 2021-07-01
 
@@ -47,7 +54,8 @@
     - 実行ファイルの側に設定ファイルを配置 
 - OSSライセンスページの追加 ([#23](https://github.com/work-robotics/Serimon/pull/23))
 
-[Unreleased]: https://github.com/work-robotics/Serimon/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/work-robotics/Serimon/compare/v0.3.0...HEAD
+[v0.3.0]: https://github.com/work-robotics/Serimon/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/work-robotics/Serimon/compare/v0.1.2...v0.2.0
 [v0.1.2]: https://github.com/work-robotics/Serimon/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/work-robotics/Serimon/compare/v0.1.0...v0.1.1
